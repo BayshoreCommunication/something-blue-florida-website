@@ -3,25 +3,21 @@
 import Image from "next/image";
 import Link from "next/link";
 
-type HeroProps = {
-  bgImage?: string;
-};
-
-export default function Hero({
-  bgImage = "/images/home/hero-bg.png",
-}: HeroProps) {
+export default function Hero() {
   return (
     <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image overlaying behind transparent Navbar */}
-      <div className="absolute inset-0 w-full h-full select-none z-0">
-        <Image
-          src={bgImage}
-          alt="Wedding Photography Background"
-          fill
-          priority
-          quality={95}
-          className="object-cover"
-        />
+      {/* Background Image with smooth looping zoom and pan animation */}
+      <div className="absolute inset-0 w-full h-full select-none z-0 overflow-hidden">
+        <div className="relative w-full h-full animate-ken-burns">
+          <Image
+            src="/images/home/hero-bg.png"
+            alt="Wedding Photography Background"
+            fill
+            priority
+            quality={95}
+            className="object-cover"
+          />
+        </div>
         {/* Soft elegant overlay to darken and ensure copy contrast */}
         <div className="absolute inset-0 bg-[#0b0c10]/80 z-10" />
       </div>
@@ -55,6 +51,26 @@ export default function Hero({
           </Link>
         </div>
       </div>
+
+      {/* Looping Panning & Zooming CSS Animations */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes kenBurns {
+            0% {
+              transform: scale(1) translate(0, 0);
+            }
+            50% {
+              transform: scale(1.08) translate(-1%, -0.5%);
+            }
+            100% {
+              transform: scale(1) translate(0, 0);
+            }
+          }
+          .animate-ken-burns {
+            animation: kenBurns 16s ease-in-out infinite;
+          }
+        `
+      }} />
     </section>
   );
 }
