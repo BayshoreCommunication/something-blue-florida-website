@@ -2,28 +2,31 @@
 
 import { useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
-import { 
-  User, 
-  UserPlus, 
-  Mail, 
-  Phone, 
-  Calendar, 
-  MapPin, 
-  DollarSign, 
-  Clock, 
-  Camera, 
-  Video, 
-  Users, 
-  Image as ImageIcon, 
-  BookOpen, 
-  Utensils, 
-  CalendarRange 
+import {
+  User,
+  UserPlus,
+  Mail,
+  Phone,
+  Calendar,
+  MapPin,
+  DollarSign,
+  Clock,
+  Camera,
+  Video,
+  Users,
+  Image as ImageIcon,
+  BookOpen,
+  Utensils,
+  CalendarRange,
 } from "lucide-react";
 
 export default function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<{ success: boolean; message: string } | null>(null);
+  const [status, setStatus] = useState<{
+    success: boolean;
+    message: string;
+  } | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
   // Toggle checkbox selections
@@ -31,7 +34,7 @@ export default function ContactForm() {
     setSelectedServices((prev) =>
       prev.includes(service)
         ? prev.filter((s) => s !== service)
-        : [...prev, service]
+        : [...prev, service],
     );
   };
 
@@ -53,7 +56,8 @@ export default function ContactForm() {
       setTimeout(() => {
         setStatus({
           success: true,
-          message: "Demo Mode: Your inquiry was submitted successfully! (Connect your EmailJS keys in ContactForm.tsx to send actual emails)."
+          message:
+            "Demo Mode: Your inquiry was submitted successfully! (Connect your EmailJS keys in ContactForm.tsx to send actual emails).",
         });
         setLoading(false);
         formRef.current?.reset();
@@ -68,7 +72,8 @@ export default function ContactForm() {
         () => {
           setStatus({
             success: true,
-            message: "Thank you! Your wedding inquiry has been sent successfully. We will get back to you shortly."
+            message:
+              "Thank you! Your wedding inquiry has been sent successfully. We will get back to you shortly.",
           });
           formRef.current?.reset();
           setSelectedServices([]);
@@ -77,9 +82,10 @@ export default function ContactForm() {
           console.error("EmailJS Error:", error);
           setStatus({
             success: false,
-            message: "Oops! Something went wrong while sending your message. Please try again."
+            message:
+              "Oops! Something went wrong while sending your message. Please try again.",
           });
-        }
+        },
       )
       .finally(() => {
         setLoading(false);
@@ -93,7 +99,9 @@ export default function ContactForm() {
         {/* Top Gold Divider */}
         <div className="flex items-center justify-center gap-4 mb-4 select-none">
           <div className="h-[1px] w-24 bg-[#BF9F72]/50" />
-          <span className="text-[#BF9F72] text-[10px] transform rotate-45">◆</span>
+          <span className="text-[#BF9F72] text-[10px] transform rotate-45">
+            ◆
+          </span>
           <div className="h-[1px] w-24 bg-[#BF9F72]/50" />
         </div>
 
@@ -107,20 +115,20 @@ export default function ContactForm() {
         {/* Bottom Gold Divider */}
         <div className="flex items-center justify-center gap-4 mt-4 select-none">
           <div className="h-[1px] w-24 bg-[#BF9F72]/50" />
-          <span className="text-[#BF9F72] text-[10px] transform rotate-45">◆</span>
+          <span className="text-[#BF9F72] text-[10px] transform rotate-45">
+            ◆
+          </span>
           <div className="h-[1px] w-24 bg-[#BF9F72]/50" />
         </div>
       </div>
 
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-10">
-        
         {/* 2-Column Fields Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-          
           {/* First Name */}
           <div className="flex flex-col">
             <label className="text-[10px] sm:text-[11px] font-bold tracking-[0.15em] text-[#0b0c10] mb-2 uppercase">
-              First Name<span className="text-[#BF9F72] ml-0.5">*</span>
+              Your Name<span className="text-[#BF9F72] ml-0.5">*</span>
             </label>
             <div className="relative flex items-center bg-[#FAF8F5] border border-[#BF9F72]/30 rounded-lg overflow-hidden focus-within:border-[#BF9F72] transition-colors duration-300">
               <span className="pl-4 text-[#BF9F72]">
@@ -139,7 +147,8 @@ export default function ContactForm() {
           {/* Fiance's First Name */}
           <div className="flex flex-col">
             <label className="text-[10px] sm:text-[11px] font-bold tracking-[0.15em] text-[#0b0c10] mb-2 uppercase">
-              Fiance&rsquo;s First Name<span className="text-[#BF9F72] ml-0.5">*</span>
+              Fiance&rsquo;s Name
+              <span className="text-[#BF9F72] ml-0.5">*</span>
             </label>
             <div className="relative flex items-center bg-[#FAF8F5] border border-[#BF9F72]/30 rounded-lg overflow-hidden focus-within:border-[#BF9F72] transition-colors duration-300">
               <span className="pl-4 text-[#BF9F72]">
@@ -214,7 +223,8 @@ export default function ContactForm() {
           {/* Event Venue or Location */}
           <div className="flex flex-col">
             <label className="text-[10px] sm:text-[11px] font-bold tracking-[0.15em] text-[#0b0c10] mb-2 uppercase">
-              Event Venue or Location<span className="text-[#BF9F72] ml-0.5">*</span>
+              Event Venue or Location
+              <span className="text-[#BF9F72] ml-0.5">*</span>
             </label>
             <div className="relative flex items-center bg-[#FAF8F5] border border-[#BF9F72]/30 rounded-lg overflow-hidden focus-within:border-[#BF9F72] transition-colors duration-300">
               <span className="pl-4 text-[#BF9F72]">
@@ -233,7 +243,8 @@ export default function ContactForm() {
           {/* Budget */}
           <div className="flex flex-col">
             <label className="text-[10px] sm:text-[11px] font-bold tracking-[0.15em] text-[#0b0c10] mb-2 uppercase">
-              What is your budget? (This will help build a proposal that makes sense)<span className="text-[#BF9F72] ml-0.5">*</span>
+              What is your budget? (This will help build a proposal that makes
+              sense)<span className="text-[#BF9F72] ml-0.5">*</span>
             </label>
             <div className="relative flex items-center bg-[#FAF8F5] border border-[#BF9F72]/30 rounded-lg overflow-hidden focus-within:border-[#BF9F72] transition-colors duration-300">
               <span className="pl-4 text-[#BF9F72]">
@@ -252,7 +263,8 @@ export default function ContactForm() {
           {/* Event Hours Duration */}
           <div className="flex flex-col">
             <label className="text-[10px] sm:text-[11px] font-bold tracking-[0.15em] text-[#0b0c10] mb-2 uppercase">
-              How many hours do you expect the event to last?<span className="text-[#BF9F72] ml-0.5">*</span>
+              How many hours do you expect the event to last?
+              <span className="text-[#BF9F72] ml-0.5">*</span>
             </label>
             <div className="relative flex items-center bg-[#FAF8F5] border border-[#BF9F72]/30 rounded-lg overflow-hidden focus-within:border-[#BF9F72] transition-colors duration-300">
               <span className="pl-4 text-[#BF9F72]">
@@ -267,13 +279,13 @@ export default function ContactForm() {
               />
             </div>
           </div>
-
         </div>
 
         {/* Services Checkboxes */}
         <div className="flex flex-col">
           <label className="text-[10px] sm:text-[11px] font-bold tracking-[0.15em] text-[#0b0c10] mb-4 uppercase">
-            Services that you are interested in<span className="text-[#BF9F72] ml-0.5">*</span>
+            Services that you are interested in
+            <span className="text-[#BF9F72] ml-0.5">*</span>
           </label>
 
           <input
@@ -283,7 +295,6 @@ export default function ContactForm() {
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-6">
-            
             {/* Photography */}
             <label className="flex items-center gap-3 cursor-pointer group">
               <input
@@ -320,8 +331,12 @@ export default function ContactForm() {
             <label className="flex items-center gap-3 cursor-pointer group">
               <input
                 type="checkbox"
-                checked={selectedServices.includes("Second Photographer / Videographer")}
-                onChange={() => handleServiceChange("Second Photographer / Videographer")}
+                checked={selectedServices.includes(
+                  "Second Photographer / Videographer",
+                )}
+                onChange={() =>
+                  handleServiceChange("Second Photographer / Videographer")
+                }
                 className="w-4 h-4 accent-[#BF9F72] cursor-pointer"
               />
               <span className="text-[#BF9F72] select-none group-hover:scale-105 transition-transform duration-200">
@@ -395,7 +410,6 @@ export default function ContactForm() {
                 Multi-Day Event
               </span>
             </label>
-
           </div>
         </div>
 
@@ -425,7 +439,6 @@ export default function ContactForm() {
             We typically respond within 24–48 hours.
           </span>
         </div>
-
       </form>
     </div>
   );

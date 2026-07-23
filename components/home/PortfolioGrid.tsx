@@ -21,9 +21,15 @@ export default function PortfolioGrid() {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") {
-        setActiveIdx((prev) => (prev !== null ? (prev + 1) % imagesData.length : null));
+        setActiveIdx((prev) =>
+          prev !== null ? (prev + 1) % imagesData.length : null,
+        );
       } else if (e.key === "ArrowLeft") {
-        setActiveIdx((prev) => (prev !== null ? (prev - 1 + imagesData.length) % imagesData.length : null));
+        setActiveIdx((prev) =>
+          prev !== null
+            ? (prev - 1 + imagesData.length) % imagesData.length
+            : null,
+        );
       } else if (e.key === "Escape") {
         setActiveIdx(null);
       }
@@ -47,16 +53,20 @@ export default function PortfolioGrid() {
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setActiveIdx((prev) => (prev !== null ? (prev - 1 + imagesData.length) % imagesData.length : null));
+    setActiveIdx((prev) =>
+      prev !== null ? (prev - 1 + imagesData.length) % imagesData.length : null,
+    );
   };
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setActiveIdx((prev) => (prev !== null ? (prev + 1) % imagesData.length : null));
+    setActiveIdx((prev) =>
+      prev !== null ? (prev + 1) % imagesData.length : null,
+    );
   };
 
   return (
-    <section className="bg-[#0b0c10] py-1 border-y border-black select-none">
+    <section className="bg-[#0b0c10] py-1 border-y border-black select-none overflow-hidden">
       <div className="flex flex-col gap-1">
         {rows.map((rowImages, rowIndex) => {
           const isEvenRow = rowIndex % 2 === 0;
@@ -70,7 +80,7 @@ export default function PortfolioGrid() {
                 <>
                   {/* Large Left */}
                   <div className="col-span-1 md:col-span-6">
-                    <div 
+                    <div
                       onClick={() => setActiveIdx(rowIndex * 5 + 0)}
                       className="relative overflow-hidden group cursor-pointer"
                     >
@@ -172,7 +182,7 @@ export default function PortfolioGrid() {
 
                   {/* Large Right */}
                   <div className="col-span-1 md:col-span-6">
-                    <div 
+                    <div
                       onClick={() => setActiveIdx(rowIndex * 5 + 4)}
                       className="relative overflow-hidden group cursor-pointer"
                     >
@@ -217,7 +227,7 @@ export default function PortfolioGrid() {
           </button>
 
           {/* Image Viewer */}
-          <div 
+          <div
             onClick={(e) => e.stopPropagation()}
             className="relative max-w-[90vw] max-h-[80vh] sm:max-h-[85vh] transition-transform duration-500 transform animate-scaleIn select-none"
           >
@@ -244,8 +254,9 @@ export default function PortfolioGrid() {
       )}
 
       {/* Lightbox CSS Utilities */}
-      <style dangerouslySetInnerHTML={{
-        __html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
           @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -260,8 +271,9 @@ export default function PortfolioGrid() {
           .animate-scaleIn {
             animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
           }
-        `
-      }} />
+        `,
+        }}
+      />
     </section>
   );
 }

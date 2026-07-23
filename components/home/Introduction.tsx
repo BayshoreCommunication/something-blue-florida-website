@@ -4,7 +4,7 @@ import Container from "components/layout/Container";
 
 export default function Introduction() {
   return (
-    <section className="bg-[#FAF8F5] py-6 sm:py-8 border-b border-gray-100 relative z-20">
+    <section className="bg-[#FAF8F5] xl:py-20 lg:py-16  py-6 sm:py-8 border-b border-gray-100 relative z-20">
       <Container className="max-w-4xl mx-auto px-6 sm:px-8 text-center">
         {/* Section Heading */}
         <div className="mb-8">
@@ -18,9 +18,9 @@ export default function Introduction() {
 
         {/* Narrative Paragraph */}
         <p className="text-gray-700 text-[14px] sm:text-[16px] md:text-[17px] leading-[1.8] max-w-[720px] mx-auto tracking-wide font-normal font-serif">
-          For twelve years, Florida&rsquo;s most storied celebrations have entrusted us
-          with their most treasured moments; rendered with timeless artistry and
-          an unwavering devotion to every fleeting detail.
+          For twelve years, Florida&rsquo;s most storied celebrations have
+          entrusted us with their most treasured moments; rendered with timeless
+          artistry and an unwavering devotion to every fleeting detail.
         </p>
 
         {/* Cursive Signature Block */}
