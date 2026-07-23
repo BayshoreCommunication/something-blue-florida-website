@@ -21,7 +21,7 @@ const greatVibes = Great_Vibes({
   variable: "--font-great-vibes",
 });
 
-const siteUrl = "https://tac-solution.vercel.app";
+const siteUrl = "https://something-blue-florida.vercel.app/";
 const ogImageUrl = `${siteUrl}/og-image.png`;
 
 /* ---------------- METADATA ---------------- */
@@ -29,7 +29,7 @@ const ogImageUrl = `${siteUrl}/og-image.png`;
 export const metadata: Metadata = {
   title: "TAC Solutions",
   description: "Empowering learners with in-demand tech skills, real-world projects, and career support to build a better future.",
-  metadataBase: new URL("https://tac-solution.vercel.app"),
+  metadataBase: new URL("https://something-blue-florida.vercel.app/"),
   alternates: {
     canonical: "/",
     languages: {
