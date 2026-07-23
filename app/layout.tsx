@@ -7,6 +7,7 @@ import { Gilda_Display, Great_Vibes } from "next/font/google";
 import ClientLayout from "./client-layout";
 import RootLayoutComponent from "components/layout/RootLayout";
 import Navbar from "components/layout/Navbar";
+import Footer from "components/layout/Footer";
 
 const gildaDisplay = Gilda_Display({
   subsets: ["latin"],
@@ -65,7 +66,7 @@ export default function RootLayout({
         <RootLayoutComponent>
           <Navbar />
           <ClientLayout>{children}</ClientLayout>
-          {/* <Footer /> */}
+          <Footer />
         </RootLayoutComponent>
       </body>
     </html>

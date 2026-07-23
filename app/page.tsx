@@ -1,5 +1,6 @@
 "use client";
 
+import ContactForm from "components/contact/ContactForm";
 import Hero from "components/home/Hero";
 import Introduction from "components/home/Introduction";
 import PortfolioGrid from "components/home/PortfolioGrid";
@@ -12,6 +13,7 @@ export default function Home() {
       <Introduction />
       <PortfolioGrid />
       <RecentStories />
+      <ContactForm />
     </div>
   );
 }
