@@ -1,0 +1,347 @@
+/* app/globals.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===============================
+   CSS Variables
+================================= */
+
+:root {
+  --font-gilda: 'Gilda Display', serif;
+  --font-great-vibes: 'Great Vibes', cursive;
+  --primary: #BF9F72;
+  --primary-dark: #997F5B;
+  --black: #0f0f0f;
+  --white: #ffffff;
+}
+
+/* ===============================
+   Base
+================================= */
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-color: var(--primary) #f5f5f5;
+  scrollbar-width: thin;
+}
+
+body {
+  font-family: var(--font-gilda), serif;
+  background: #ffffff;
+  color: #111111;
+  overflow-x: hidden;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+button,
+input,
+textarea {
+  font-family: var(--font-gilda), serif;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button,
+input,
+textarea {
+  outline: none;
+  border: none;
+  font: inherit;
+}
+
+button,
+a.inline-flex,
+.btn-primary,
+.btn-outline {
+  border-radius: 8px !important;
+}
+
+/* ===============================
+   Scrollbar
+================================= */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f3f3;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 999px;
+  border: 2px solid #f3f3f3;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}
+
+/* ===============================
+   Utility
+================================= */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ===============================
+   Premium Primary Button
+================================= */
+
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 14px 28px;
+
+  border-radius: 8px;
+
+  background: var(--primary);
+  color: white;
+
+  font-weight: 600;
+  letter-spacing: 0.3px;
+
+  transition:
+    transform 300ms ease,
+    box-shadow 300ms ease,
+    color 300ms ease;
+}
+
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: white;
+  z-index: -1;
+  transform: translate(-100%, 100%);
+  transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.btn-primary:hover::after {
+  transform: translate(0, 0);
+}
+
+.btn-primary:hover {
+  color: var(--primary);
+  transform: translateY(-3px) scale(1.02);
+
+  box-shadow:
+    0 12px 30px rgba(191, 159, 114, 0.35),
+    0 0 0 4px rgba(191, 159, 114, 0.12);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* ===============================
+   Outline Button
+================================= */
+
+.btn-outline {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  border: 1.5px solid var(--primary);
+  background: transparent;
+
+  color: var(--primary);
+
+  padding: 13px 26px;
+  border-radius: 8px;
+
+  transition: 
+    color 300ms ease,
+    transform 300ms ease,
+    border-color 300ms ease;
+}
+
+.btn-outline::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  z-index: -1;
+  transform: translate(-100%, 100%);
+  transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.btn-outline:hover::after {
+  transform: translate(0, 0);
+}
+
+.btn-outline:hover {
+  color: white;
+  transform: translateY(-2px);
+  border-color: var(--primary);
+}
+
+/* ===============================
+   Premium Card
+================================= */
+
+.premium-card {
+  border-radius: 28px;
+
+  background: white;
+
+  border: 1px solid rgba(191, 159, 114, 0.12);
+
+  transition:
+    transform 300ms ease,
+    box-shadow 300ms ease,
+    border-color 300ms ease;
+}
+
+.premium-card:hover {
+  transform: translateY(-6px);
+
+  border-color: rgba(191, 159, 114, 0.3);
+
+  box-shadow:
+    0 20px 40px rgba(191, 159, 114, 0.08),
+    0 10px 20px rgba(0, 0, 0, 0.04);
+}
+
+/* ===============================
+   Image Hover
+================================= */
+
+.site-image-reveal {
+  overflow: hidden;
+  border-radius: 24px;
+}
+
+.site-image-reveal img {
+  transition:
+    transform 700ms ease,
+    filter 700ms ease;
+}
+
+.site-image-reveal:hover img {
+  transform: scale(1.06);
+  filter: saturate(1.08) contrast(1.02);
+}
+
+/* ===============================
+   Icon Hover
+================================= */
+
+.icon-hover {
+  transition:
+    transform 250ms ease,
+    color 250ms ease;
+}
+
+.icon-hover:hover {
+  transform: translateY(-2px) scale(1.08);
+  color: var(--primary);
+}
+
+/* ===============================
+   Glow Hover
+================================= */
+
+.glow-hover {
+  transition:
+    box-shadow 300ms ease,
+    transform 300ms ease;
+}
+
+.glow-hover:hover {
+  transform: translateY(-4px);
+
+  box-shadow:
+    0 10px 25px rgba(191, 159, 114, 0.18),
+    0 0 0 4px rgba(191, 159, 114, 0.08);
+}
+
+/* ===============================
+   Animation
+================================= */
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.float-animation {
+  animation: floatUp 3s ease-in-out infinite;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* ===============================
+   Reduced Motion
+================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
