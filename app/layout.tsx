@@ -27,8 +27,8 @@ const ogImageUrl = `${siteUrl}/og-image.png`;
 /* ---------------- METADATA ---------------- */
 
 export const metadata: Metadata = {
-  title: "TAC Solutions",
-  description: "Empowering learners with in-demand tech skills, real-world projects, and career support to build a better future.",
+  title: "Something Blue | Florida Wedding Photography & Videography",
+  description: "Florida's premier wedding photography and videography studio. We capture timeless moments, elegant celebrations, and genuine emotions with artistic devotion across Florida. Book your experience today.",
   metadataBase: new URL("https://something-blue-florida.vercel.app/"),
   alternates: {
     canonical: "/",
@@ -37,7 +37,26 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    images: "/opengraph-image.png",
+    title: "Something Blue | Florida Wedding Photography & Videography",
+    description: "Florida's premier wedding photography and videography studio. We capture timeless moments, elegant celebrations, and genuine emotions with artistic devotion.",
+    url: "https://something-blue-florida.vercel.app/",
+    siteName: "Something Blue Florida",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Something Blue Florida Wedding Photography",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Something Blue | Florida Wedding Photography & Videography",
+    description: "Florida's premier wedding photography and videography studio. We capture timeless moments, elegant celebrations, and genuine emotions.",
+    images: ["/opengraph-image.png"],
   },
 };
 
