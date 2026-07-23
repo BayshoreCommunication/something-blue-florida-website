@@ -46,6 +46,22 @@ function getGalleryImages(id: number) {
   ];
 }
 
+// Map any portfolio image path to its corresponding story details page slug
+function getStoryForImage(imgSrc: string): Story | undefined {
+  const match = imgSrc.match(/\/images\/portfolio\/(\d+)\.png$/);
+  if (match) {
+    const num = parseInt(match[1], 10);
+    const storyId = ((num - 1) % 8) + 1;
+    return (storiesData as Story[]).find((s) => s.id === storyId);
+  }
+  return undefined;
+}
+
+function getStorySlugForImage(imgSrc: string): string {
+  const story = getStoryForImage(imgSrc);
+  return story ? story.slug : "/";
+}
+
 type Props = {
   params: {
     slug: string;
@@ -174,21 +190,43 @@ export default function StoryDetailPage({ params }: Props) {
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {galleryImages.map((imgSrc, imgIndex) => (
-              <div
-                key={imgIndex}
-                className="relative aspect-[3/4] overflow-hidden group bg-gray-50 border border-gray-100"
-              >
-                <Image
-                  src={imgSrc}
-                  alt={`Highlight moment ${imgIndex + 1}`}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-103"
-                />
-              </div>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {galleryImages.map((imgSrc, imgIndex) => {
+              const targetSlug = getStorySlugForImage(imgSrc);
+              const targetStory = getStoryForImage(imgSrc);
+              return (
+                <div key={imgIndex} className="flex flex-col text-center">
+                  <Link
+                    href={targetSlug}
+                    className="relative aspect-[3/4] overflow-hidden group bg-gray-50 border border-gray-100 block cursor-pointer mb-4"
+                  >
+                    <Image
+                      src={imgSrc}
+                      alt={targetStory ? `Wedding of ${targetStory.coupleName}` : "Highlight moment"}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
+                    />
+                  </Link>
+                  {targetStory && (
+                    <div className="px-2">
+                      <h4 className="text-[17px] font-normal text-gray-900 tracking-wide font-serif mb-1">
+                        {targetStory.coupleName}
+                      </h4>
+                      <p className="text-gray-500 text-[12px] leading-[1.65] max-w-[240px] mx-auto mb-3 tracking-wide font-serif font-normal">
+                        {targetStory.description}
+                      </p>
+                      <Link
+                        href={targetSlug}
+                        className="inline-block text-[10px] font-medium tracking-[0.25em] text-[#0b0c10] hover:text-[#BF9F72] transition-colors uppercase border-b border-gray-200 hover:border-[#BF9F72] pb-0.5"
+                      >
+                        View Details &rarr;
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </Container>
       </section>
