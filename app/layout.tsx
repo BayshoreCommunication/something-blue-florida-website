@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     siteName: "Something Blue Florida",
     images: [
       {
-        url: "/opengraph-image.png",
+        url: `${siteUrl}opengraph-image.png`,
         width: 1200,
         height: 630,
         alt: "Something Blue Florida Wedding Photography",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Something Blue | Florida Wedding Photography & Videography",
     description: "Florida's premier wedding photography and videography studio. We capture timeless moments, elegant celebrations, and genuine emotions.",
-    images: ["/opengraph-image.png"],
+    images: [`${siteUrl}opengraph-image.png`],
   },
 };
 
