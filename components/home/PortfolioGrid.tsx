@@ -234,7 +234,7 @@ export default function PortfolioGrid() {
             <img
               src={imagesData[activeIdx]}
               alt={`Selected portfolio image ${activeIdx + 1}`}
-              className="max-w-full max-h-[80vh] sm:max-h-[85vh] object-contain shadow-2xl rounded"
+              className="max-w-full max-h-[80vh] sm:max-h-[85vh] object-contain shadow-2xl"
             />
             {/* Image Counter indicator */}
             <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-white/60 text-[13px] tracking-widest font-serif uppercase">
