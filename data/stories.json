@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "coupleName": "Arthur & Linda",
+    "image": "/images/portfolio/1.png",
+    "description": "A romantic lakeside celebration under the Florida sun, filled with soft blue hues and timeless elegance.",
+    "slug": "/portfolio/arthur-linda"
+  },
+  {
+    "id": 2,
+    "coupleName": "Sarah & David",
+    "image": "/images/portfolio/2.png",
+    "description": "An intimate coastal gathering on the beaches of Key West, capturing pure joy and golden hour magic.",
+    "slug": "/portfolio/sarah-david"
+  },
+  {
+    "id": 3,
+    "coupleName": "Jessica & Michael",
+    "image": "/images/portfolio/3.png",
+    "description": "An opulent ballroom ceremony in Miami, featuring classic details, luxury styling, and a night of dancing.",
+    "slug": "/portfolio/jessica-michael"
+  },
+  {
+    "id": 4,
+    "coupleName": "Emma & Daniel",
+    "image": "/images/portfolio/4.png",
+    "description": "A rustic-chic garden wedding surrounded by lush greenery, fairy lights, and heartfelt family moments.",
+    "slug": "/portfolio/emma-daniel"
+  },
+  {
+    "id": 5,
+    "coupleName": "Sophia & James",
+    "image": "/images/portfolio/5.png",
+    "description": "A sophisticated estate wedding with historic architecture, custom details, and modern sophistication.",
+    "slug": "/portfolio/sophia-james"
+  },
+  {
+    "id": 6,
+    "coupleName": "Olivia & Benjamin",
+    "image": "/images/portfolio/6.png",
+    "description": "A beautiful sunset beachfront ceremony, where the ocean breeze met pure laughter and love.",
+    "slug": "/portfolio/olivia-benjamin"
+  },
+  {
+    "id": 7,
+    "coupleName": "Isabella & Alexander",
+    "image": "/images/portfolio/7.png",
+    "description": "An elegant vineyard celebration, showcasing rich autumn tones, fine wine, and endless smiles.",
+    "slug": "/portfolio/isabella-alexander"
+  },
+  {
+    "id": 8,
+    "coupleName": "Mia & Ethan",
+    "image": "/images/portfolio/8.png",
+    "description": "A vibrant urban chic loft ceremony in downtown Tampa, highlighting modern design and energetic romance.",
+    "slug": "/portfolio/mia-ethan"
+  }
+]
