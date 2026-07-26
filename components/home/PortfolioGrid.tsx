@@ -89,6 +89,7 @@ export default function PortfolioGrid() {
                         alt={`Portfolio image ${rowIndex * 5 + 1}`}
                         width={2000}
                         height={1500}
+                        quality={100}
                         className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
                       />
                     </div>
@@ -108,6 +109,7 @@ export default function PortfolioGrid() {
                             alt={`Portfolio image ${rowIndex * 5 + i + 2}`}
                             width={2000}
                             height={1500}
+                            quality={100}
                             className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
                           />
                         </div>
@@ -129,6 +131,7 @@ export default function PortfolioGrid() {
                             alt={`Portfolio image ${rowIndex * 5 + i + 4}`}
                             width={2000}
                             height={1500}
+                            quality={100}
                             className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
                           />
                         </div>
@@ -152,6 +155,7 @@ export default function PortfolioGrid() {
                             alt={`Portfolio image ${rowIndex * 5 + i + 1}`}
                             width={2000}
                             height={1500}
+                            quality={100}
                             className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
                           />
                         </div>
@@ -173,6 +177,7 @@ export default function PortfolioGrid() {
                             alt={`Portfolio image ${rowIndex * 5 + i + 3}`}
                             width={2000}
                             height={1500}
+                            quality={100}
                             className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
                           />
                         </div>
@@ -191,6 +196,7 @@ export default function PortfolioGrid() {
                         alt={`Portfolio image ${rowIndex * 5 + 5}`}
                         width={2000}
                         height={1500}
+                        quality={100}
                         className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
                       />
                     </div>
