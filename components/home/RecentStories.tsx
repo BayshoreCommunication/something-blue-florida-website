@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import LazyImage from "components/common/LazyImage";
 import Link from "next/link";
 import Container from "components/layout/Container";
 import storiesData from "data/stories.json";
@@ -62,7 +62,7 @@ function StoryCard({ story, isTall }: { story: Story; isTall: boolean }) {
           isTall ? "aspect-[3/4.5]" : "aspect-[4/3]"
         }`}
       >
-        <Image
+        <LazyImage
           src={story.image}
           alt={`Wedding photography for ${story.coupleName}`}
           fill

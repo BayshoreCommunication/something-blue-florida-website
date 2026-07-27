@@ -58,6 +58,20 @@ img {
   max-width: 100%;
   height: auto;
   display: block;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Reset rendering for logos, icons, and vectors to prevent pixelation/jagged edges */
+img[src*="logo"],
+img[src$=".svg"],
+.no-enhance {
+  image-rendering: auto !important;
+  backface-visibility: visible !important;
+  transform: none !important;
+  filter: none !important;
 }
 
 a {
@@ -343,4 +357,18 @@ a.inline-flex,
     transition: none !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ===============================
+   Photo Enhancement
+================================= */
+
+.photo-enhanced {
+  filter: url(#crisp-sharpen) contrast(1.05) saturate(1.03) brightness(1.01);
+  transition: filter 500ms ease, transform 700ms ease, opacity 300ms ease-out !important;
+}
+
+.group:hover .photo-enhanced,
+.photo-enhanced:hover {
+  filter: url(#crisp-sharpen) contrast(1.08) saturate(1.05) brightness(1.02);
 }

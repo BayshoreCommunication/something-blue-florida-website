@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "components/common/LazyImage";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Container from "components/layout/Container";
@@ -39,16 +39,16 @@ function getWeddingDetails(id: number) {
 function getGalleryImages(id: number) {
   const base = ((id - 1) * 2) % 15 + 1;
   return [
-    `/images/portfolio/${base}.png`,
-    `/images/portfolio/${base + 1}.png`,
-    `/images/portfolio/${base + 2}.png`,
-    `/images/portfolio/${base + 3}.png`,
+    `/images/portfolio/${base}.jpg`,
+    `/images/portfolio/${base + 1}.jpg`,
+    `/images/portfolio/${base + 2}.jpg`,
+    `/images/portfolio/${base + 3}.jpg`,
   ];
 }
 
 // Map any portfolio image path to its corresponding story details page slug
 function getStoryForImage(imgSrc: string): Story | undefined {
-  const match = imgSrc.match(/\/images\/portfolio\/(\d+)\.png$/);
+  const match = imgSrc.match(/\/images\/portfolio\/(\d+)\.jpg$/);
   if (match) {
     const num = parseInt(match[1], 10);
     const storyId = ((num - 1) % 8) + 1;
@@ -90,7 +90,7 @@ export default function StoryDetailPage({ params }: Props) {
             {/* Left Column: Image (Crisp, native aspect ratio) */}
             <div className="lg:col-span-6">
               <div className="relative w-full aspect-[3/4] overflow-hidden rounded-2xl shadow-md bg-gray-100 select-none">
-                <Image
+                <LazyImage
                   src={story.image}
                   alt={`${story.coupleName} Wedding`}
                   fill
@@ -192,7 +192,7 @@ export default function StoryDetailPage({ params }: Props) {
                     href={targetSlug}
                     className="relative aspect-[3/4] overflow-hidden group bg-gray-50 border border-gray-100 block cursor-pointer mb-4"
                   >
-                    <Image
+                    <LazyImage
                       src={imgSrc}
                       alt={targetStory ? `Wedding of ${targetStory.coupleName}` : "Highlight moment"}
                       fill

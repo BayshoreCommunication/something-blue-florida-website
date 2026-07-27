@@ -70,6 +70,16 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${gildaDisplay.variable} ${greatVibes.variable} ${gildaDisplay.className}`}>
       <body>
+        {/* SVG Filter for real-time browser-level image sharpening */}
+        <svg style={{ display: 'none', position: 'absolute', width: 0, height: 0 }} aria-hidden="true">
+          <filter id="crisp-sharpen">
+            <feConvolveMatrix 
+              order="3" 
+              kernelMatrix="0 -0.12 0 -0.12 1.48 -0.12 0 -0.12 0" 
+            />
+          </filter>
+        </svg>
+
         {/* NoScript Fallback */}
         <noscript>
           <style>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import LazyImage from "components/common/LazyImage";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import imagesData from "data/portfolio.json";
 
@@ -84,7 +84,7 @@ export default function PortfolioGrid() {
                       onClick={() => setActiveIdx(rowIndex * 5 + 0)}
                       className="relative overflow-hidden group cursor-pointer"
                     >
-                      <Image
+                      <LazyImage
                         src={rowImages[0]}
                         alt={`Portfolio image ${rowIndex * 5 + 1}`}
                         width={2000}
@@ -104,7 +104,7 @@ export default function PortfolioGrid() {
                           onClick={() => setActiveIdx(rowIndex * 5 + i + 1)}
                           className="relative overflow-hidden group cursor-pointer"
                         >
-                          <Image
+                          <LazyImage
                             src={img}
                             alt={`Portfolio image ${rowIndex * 5 + i + 2}`}
                             width={2000}
@@ -126,7 +126,7 @@ export default function PortfolioGrid() {
                           onClick={() => setActiveIdx(rowIndex * 5 + i + 3)}
                           className="relative overflow-hidden group cursor-pointer"
                         >
-                          <Image
+                          <LazyImage
                             src={img}
                             alt={`Portfolio image ${rowIndex * 5 + i + 4}`}
                             width={2000}
@@ -150,7 +150,7 @@ export default function PortfolioGrid() {
                           onClick={() => setActiveIdx(rowIndex * 5 + i + 0)}
                           className="relative overflow-hidden group cursor-pointer"
                         >
-                          <Image
+                          <LazyImage
                             src={img}
                             alt={`Portfolio image ${rowIndex * 5 + i + 1}`}
                             width={2000}
@@ -172,7 +172,7 @@ export default function PortfolioGrid() {
                           onClick={() => setActiveIdx(rowIndex * 5 + i + 2)}
                           className="relative overflow-hidden group cursor-pointer"
                         >
-                          <Image
+                          <LazyImage
                             src={img}
                             alt={`Portfolio image ${rowIndex * 5 + i + 3}`}
                             width={2000}
@@ -191,7 +191,7 @@ export default function PortfolioGrid() {
                       onClick={() => setActiveIdx(rowIndex * 5 + 4)}
                       className="relative overflow-hidden group cursor-pointer"
                     >
-                      <Image
+                      <LazyImage
                         src={rowImages[4]}
                         alt={`Portfolio image ${rowIndex * 5 + 5}`}
                         width={2000}

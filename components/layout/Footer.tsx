@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import LazyImage from "components/common/LazyImage";
 import Link from "next/link";
 import { Mail, Phone, Instagram, Facebook, Compass, Music2 } from "lucide-react";
 import Container from "./Container";
@@ -8,11 +9,11 @@ import Container from "./Container";
 export default function Footer() {
   // 5 Portrait showcase photos for the top horizontal footer banner
   const footerImages = [
-    "/images/portfolio/1.png",
-    "/images/portfolio/2.png",
-    "/images/portfolio/3.png",
-    "/images/portfolio/4.png",
-    "/images/portfolio/5.png",
+    "/images/portfolio/1.jpg",
+    "/images/portfolio/2.jpg",
+    "/images/portfolio/3.jpg",
+    "/images/portfolio/4.jpg",
+    "/images/portfolio/5.jpg",
   ];
 
   return (
@@ -27,7 +28,7 @@ export default function Footer() {
               index === 4 ? "hidden lg:block" : ""
             } ${index === 3 ? "hidden sm:block" : ""}`}
           >
-            <Image
+            <LazyImage
               src={src}
               alt={`Footer wedding gallery image ${index + 1}`}
               fill
