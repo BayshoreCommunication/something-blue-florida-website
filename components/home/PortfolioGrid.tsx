@@ -15,6 +15,12 @@ export default function PortfolioGrid() {
     }
   }
 
+  // Convert portfolio .jpg/.png/.svg paths to .webp (same logic as LazyImage)
+  const toWebP = (src: string) =>
+    src.startsWith("/images/portfolio/")
+      ? src.replace(/\.(jpg|jpeg|png|svg)$/i, ".webp")
+      : src;
+
   // Handle lightbox keyboard navigation
   useEffect(() => {
     if (activeIdx === null) return;
@@ -37,6 +43,20 @@ export default function PortfolioGrid() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeIdx]);
+
+  // Preload adjacent images when lightbox opens / navigates
+  useEffect(() => {
+    if (activeIdx === null) return;
+    const idxs = [
+      activeIdx,
+      (activeIdx + 1) % imagesData.length,
+      (activeIdx - 1 + imagesData.length) % imagesData.length,
+    ];
+    idxs.forEach((i) => {
+      const img = new window.Image();
+      img.src = toWebP(imagesData[i]);
+    });
   }, [activeIdx]);
 
   // Lock scroll when lightbox is active
@@ -238,7 +258,7 @@ export default function PortfolioGrid() {
             className="relative max-w-[90vw] max-h-[80vh] sm:max-h-[85vh] transition-transform duration-500 transform animate-scaleIn select-none"
           >
             <img
-              src={imagesData[activeIdx]}
+              src={toWebP(imagesData[activeIdx])}
               alt={`Selected portfolio image ${activeIdx + 1}`}
               className="max-w-full max-h-[80vh] sm:max-h-[85vh] object-contain shadow-2xl"
             />
