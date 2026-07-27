@@ -46,16 +46,17 @@ export default function Footer() {
             {/* Left Column: Logo & Contact */}
             <div className="flex flex-col items-center text-center">
               {/* Monogram logo image */}
-              <div className="relative w-40 h-40 mb-4 overflow-hidden select-none">
+              <div className="relative w-80 h-auto mb-4 overflow-hidden select-none">
                 <Image
-                  src="/images/footer-logo.png"
+                  src="/images/footer-logo.svg"
                   alt="Something Blue Logo"
-                  fill
+                  width={600}
+                  height={150}
                   className="object-contain"
                 />
               </div>
 
-              {/* Logo Typography details */}
+              {/* Logo Typography details
               <h3 className="text-[15px] font-normal tracking-[0.25em] text-[#0b0c10] uppercase font-serif mb-2">
                 Something Blue
               </h3>
@@ -66,7 +67,7 @@ export default function Footer() {
 
               <h4 className="text-[10px] font-medium tracking-[0.3em] text-[#BF9F72] uppercase mb-6 font-serif">
                 Wedding Photography
-              </h4>
+              </h4> */}
 
               {/* Contact Information */}
               <div className="flex flex-col gap-4 text-center">

@@ -82,94 +82,86 @@ export default function StoryDetailPage({ params }: Props) {
 
   return (
     <main className="bg-[#FAF8F5] min-h-screen pb-20 select-none">
-      {/* 1. IMMERSIVE HERO HEADER */}
-      <section className="relative w-full h-[65vh] md:h-[75vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 w-full h-full select-none z-0">
-          <Image
-            src={story.image}
-            alt={`${story.coupleName} Wedding`}
-            fill
-            priority
-            quality={95}
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-[#0b0c10]/45 z-10" />
-        </div>
-
-        <div className="relative z-20 text-center px-4 max-w-4xl pt-20">
-          <span className="block text-[12px] sm:text-[13px] font-medium tracking-[0.3em] text-[#BF9F72] uppercase mb-4">
-            Wedding Story
-          </span>
-          <h1 className="text-white text-3xl sm:text-5xl md:text-6xl font-normal tracking-[0.03em] leading-tight font-serif mb-6 drop-shadow-md">
-            {story.coupleName}
-          </h1>
-          <div className="h-0.5 w-16 bg-[#BF9F72] mx-auto" />
-        </div>
-      </section>
-
       {/* 2. THE STORY & DETAILS SECTION */}
-      <section className="py-16 sm:py-24">
+      <section className="pt-32 pb-16 sm:py-24">
         <Container className="max-w-[1200px] px-4 sm:px-16 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             
-            {/* Left Column: Story Description */}
-            <div className="lg:col-span-7">
-              <span className="text-[12px] font-medium tracking-[0.25em] text-[#BF9F72] uppercase block mb-3">
-                The Narrative
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-normal text-gray-900 tracking-wide font-serif mb-6">
-                Capturing the Heart of {story.coupleName}&rsquo;s Day
-              </h2>
-              <p className="text-gray-600 text-[15px] sm:text-[16px] leading-[1.8] tracking-wide font-serif mb-6 font-normal">
-                {story.description} Every detail of this wedding was carefully chosen to reflect
-                their journey together. From the morning preparations to the starlit dance floor,
-                it was a day filled with laughter, tears, and unforgettable celebrations.
-              </p>
-              <p className="text-gray-600 text-[15px] sm:text-[16px] leading-[1.8] tracking-wide font-serif font-normal">
-                Our approach was to capture the organic, fleeting emotions—the quiet glances,
-                the shared laughs, and the grand festive highlights. We were honored to preserve these
-                cherished moments that will be treasured for generations to come.
-              </p>
+            {/* Left Column: Image (Crisp, native aspect ratio) */}
+            <div className="lg:col-span-6">
+              <div className="relative w-full aspect-[3/4] overflow-hidden rounded-2xl shadow-md bg-gray-100 select-none">
+                <Image
+                  src={story.image}
+                  alt={`${story.coupleName} Wedding`}
+                  fill
+                  priority
+                  quality={100}
+                  className="object-cover"
+                />
+              </div>
             </div>
 
-            {/* Right Column: Wedding Details Card */}
-            <div className="lg:col-span-5 bg-white border border-gray-150/60 p-8 rounded-2xl shadow-sm">
-              <h3 className="text-[18px] font-normal text-gray-900 tracking-wider font-serif mb-6 border-b border-gray-100 pb-4 uppercase">
-                The Details
-              </h3>
-              
-              <div className="flex flex-col gap-5">
-                <div className="flex justify-between items-baseline border-b border-gray-50 pb-3">
-                  <span className="text-[11px] tracking-[0.15em] text-gray-400 uppercase font-semibold">
-                    Venue
-                  </span>
-                  <span className="text-sm font-medium text-gray-800 text-right font-serif">
-                    {weddingDetails.venue}
-                  </span>
-                </div>
-                <div className="flex justify-between items-baseline border-b border-gray-50 pb-3">
-                  <span className="text-[11px] tracking-[0.15em] text-gray-400 uppercase font-semibold">
-                    Style
-                  </span>
-                  <span className="text-sm font-medium text-gray-800 text-right font-serif">
-                    {weddingDetails.style}
-                  </span>
-                </div>
-                <div className="flex justify-between items-baseline border-b border-gray-50 pb-3">
-                  <span className="text-[11px] tracking-[0.15em] text-gray-400 uppercase font-semibold">
-                    Florals
-                  </span>
-                  <span className="text-sm font-medium text-gray-800 text-right font-serif">
-                    {weddingDetails.florals}
-                  </span>
-                </div>
-                <div className="flex justify-between items-baseline pb-1">
-                  <span className="text-[11px] tracking-[0.15em] text-gray-400 uppercase font-semibold">
-                    Photography
-                  </span>
-                  <span className="text-sm font-semibold text-[#BF9F72] text-right font-serif">
-                    Something Blue
-                  </span>
+            {/* Right Column: Story Description and Details */}
+            <div className="lg:col-span-6 flex flex-col gap-8">
+              <div>
+                <span className="text-[12px] font-medium tracking-[0.25em] text-[#BF9F72] uppercase block mb-3">
+                  Wedding Story
+                </span>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-normal text-gray-900 tracking-wide font-serif mb-6 leading-tight">
+                  {story.coupleName}
+                </h1>
+                <div className="h-0.5 w-16 bg-[#BF9F72] mb-6" />
+                <p className="text-gray-600 text-[15px] sm:text-[16px] leading-[1.8] tracking-wide font-serif mb-6 font-normal">
+                  {story.description} Every detail of this wedding was carefully chosen to reflect
+                  their journey together. From the morning preparations to the starlit dance floor,
+                  it was a day filled with laughter, tears, and unforgettable celebrations.
+                </p>
+                <p className="text-gray-600 text-[15px] sm:text-[16px] leading-[1.8] tracking-wide font-serif font-normal">
+                  Our approach was to capture the organic, fleeting emotions—the quiet glances,
+                  the shared laughs, and the grand festive highlights. We were honored to preserve these
+                  cherished moments that will be treasured for generations to come.
+                </p>
+              </div>
+
+              {/* Wedding Details Card */}
+              <div className="bg-white border border-gray-150/60 p-8 rounded-2xl shadow-sm">
+                <h3 className="text-[18px] font-normal text-gray-900 tracking-wider font-serif mb-6 border-b border-gray-100 pb-4 uppercase">
+                  The Details
+                </h3>
+                
+                <div className="flex flex-col gap-5">
+                  <div className="flex justify-between items-baseline border-b border-gray-50 pb-3">
+                    <span className="text-[11px] tracking-[0.15em] text-gray-400 uppercase font-semibold">
+                      Venue
+                    </span>
+                    <span className="text-sm font-medium text-gray-800 text-right font-serif">
+                      {weddingDetails.venue}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-baseline border-b border-gray-50 pb-3">
+                    <span className="text-[11px] tracking-[0.15em] text-gray-400 uppercase font-semibold">
+                      Style
+                    </span>
+                    <span className="text-sm font-medium text-gray-800 text-right font-serif">
+                      {weddingDetails.style}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-baseline border-b border-gray-50 pb-3">
+                    <span className="text-[11px] tracking-[0.15em] text-gray-400 uppercase font-semibold">
+                      Florals
+                    </span>
+                    <span className="text-sm font-medium text-gray-800 text-right font-serif">
+                      {weddingDetails.florals}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-baseline pb-1">
+                    <span className="text-[11px] tracking-[0.15em] text-gray-400 uppercase font-semibold">
+                      Photography
+                    </span>
+                    <span className="text-sm font-semibold text-[#BF9F72] text-right font-serif">
+                      Something Blue
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

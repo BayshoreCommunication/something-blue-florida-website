@@ -57,7 +57,7 @@ export default function Navbar() {
         <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-16 lg:px-8 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group z-50">
-            <Image src="/images/logo.png" alt="Logo" width={100} height={100} className="w-[100px] h-[100px] object-cover"/>
+            <Image src="/images/logo.png" alt="Logo" width={800} height={523} className="w-[100px] h-auto object-contain"/>
           </Link>
 
           {/* Desktop Navigation Links */}

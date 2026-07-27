@@ -74,12 +74,12 @@ export default function PortfolioGrid() {
           return (
             <div
               key={rowIndex}
-              className="grid grid-cols-1 md:grid-cols-12 gap-1 w-full"
+              className="grid grid-cols-2 md:grid-cols-12 gap-1 w-full"
             >
               {isEvenRow ? (
                 <>
                   {/* Large Left */}
-                  <div className="col-span-1 md:col-span-6">
+                  <div className="col-span-2 md:col-span-6">
                     <div
                       onClick={() => setActiveIdx(rowIndex * 5 + 0)}
                       className="relative overflow-hidden group cursor-pointer"
@@ -186,7 +186,7 @@ export default function PortfolioGrid() {
                   </div>
 
                   {/* Large Right */}
-                  <div className="col-span-1 md:col-span-6">
+                  <div className="col-span-2 md:col-span-6">
                     <div
                       onClick={() => setActiveIdx(rowIndex * 5 + 4)}
                       className="relative overflow-hidden group cursor-pointer"
