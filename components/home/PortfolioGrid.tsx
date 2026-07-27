@@ -67,14 +67,14 @@ export default function PortfolioGrid() {
 
   return (
     <section className="bg-[#0b0c10] py-1 border-y border-black select-none overflow-hidden">
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-3 md:gap-1">
         {rows.map((rowImages, rowIndex) => {
           const isEvenRow = rowIndex % 2 === 0;
 
           return (
             <div
               key={rowIndex}
-              className="grid grid-cols-2 md:grid-cols-12 gap-1 w-full"
+              className="grid grid-cols-2 md:grid-cols-12 gap-3 md:gap-1 w-full"
             >
               {isEvenRow ? (
                 <>
@@ -97,7 +97,7 @@ export default function PortfolioGrid() {
 
                   {/* Middle Column */}
                   <div className="col-span-1 md:col-span-3">
-                    <div className="grid grid-rows-2 gap-1">
+                    <div className="grid grid-rows-2 gap-3 md:gap-1">
                       {[rowImages[1], rowImages[2]].map((img, i) => (
                         <div
                           key={i}
@@ -119,7 +119,7 @@ export default function PortfolioGrid() {
 
                   {/* Right Column */}
                   <div className="col-span-1 md:col-span-3">
-                    <div className="grid grid-rows-2 gap-1">
+                    <div className="grid grid-rows-2 gap-3 md:gap-1">
                       {[rowImages[3], rowImages[4]].map((img, i) => (
                         <div
                           key={i}
@@ -143,7 +143,7 @@ export default function PortfolioGrid() {
                 <>
                   {/* Left Column */}
                   <div className="col-span-1 md:col-span-3">
-                    <div className="grid grid-rows-2 gap-1">
+                    <div className="grid grid-rows-2 gap-3 md:gap-1">
                       {[rowImages[0], rowImages[1]].map((img, i) => (
                         <div
                           key={i}
@@ -165,7 +165,7 @@ export default function PortfolioGrid() {
 
                   {/* Middle Column */}
                   <div className="col-span-1 md:col-span-3">
-                    <div className="grid grid-rows-2 gap-1">
+                    <div className="grid grid-rows-2 gap-3 md:gap-1">
                       {[rowImages[2], rowImages[3]].map((img, i) => (
                         <div
                           key={i}
