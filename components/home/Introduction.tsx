@@ -4,7 +4,7 @@ import Container from "components/layout/Container";
 
 export default function Introduction() {
   return (
-    <section className="bg-[#FAF8F5] xl:py-20 lg:py-16  py-6 sm:py-8 border-b border-gray-100 relative z-20">
+    <section id="about" className="bg-[#FAF8F5] xl:py-20 lg:py-16  py-6 sm:py-8 border-b border-gray-100 relative z-20">
       <Container className="max-w-4xl mx-auto px-6 sm:px-8 text-center">
         {/* Section Heading */}
         <div className="mb-8">

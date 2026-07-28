@@ -86,7 +86,7 @@ export default function PortfolioGrid() {
   };
 
   return (
-    <section className="bg-[#0b0c10] py-1 border-y border-black select-none overflow-hidden">
+    <section id="portfolio" className="bg-[#0b0c10] py-1 border-y border-black select-none overflow-hidden">
       <div className="flex flex-col gap-3 md:gap-1">
         {rows.map((rowImages, rowIndex) => {
           const isEvenRow = rowIndex % 2 === 0;

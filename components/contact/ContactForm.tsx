@@ -93,7 +93,7 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-8 py-12">
+    <section id="contact" className="w-full max-w-[1200px] mx-auto px-4 sm:px-8 py-12">
       {/* Header divider decor */}
       <div className="text-center mb-12">
         {/* Top Gold Divider */}
@@ -440,6 +440,6 @@ export default function ContactForm() {
           </span>
         </div>
       </form>
-    </div>
+    </section>
   );
 }

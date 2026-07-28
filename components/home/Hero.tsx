@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function Hero() {
   return (
-    <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with smooth looping zoom and pan animation */}
       <div className="absolute inset-0 w-full h-full select-none z-0 overflow-hidden">
         <div className="relative w-full h-full animate-ken-burns">
