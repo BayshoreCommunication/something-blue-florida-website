@@ -22,6 +22,7 @@ import {
 
 export default function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null);
+  const statusRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{
     success: boolean;
@@ -42,11 +43,23 @@ export default function ContactForm() {
     e.preventDefault();
     if (!formRef.current) return;
 
+    // Validate service selection
+    if (selectedServices.length === 0) {
+      setStatus({
+        success: false,
+        message: "Please select at least one service you are interested in.",
+      });
+      statusRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+      return;
+    }
+
     setLoading(true);
     setStatus(null);
 
     // Replace the placeholders with your actual EmailJS credentials:
-    // Service ID, Template ID, Public Key
     const SERVICE_ID = "service_something_blue"; // Replace with your Service ID
     const TEMPLATE_ID = "template_wedding_inquiry"; // Replace with your Template ID
     const PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY"; // Replace with your Public Key
@@ -62,6 +75,10 @@ export default function ContactForm() {
         setLoading(false);
         formRef.current?.reset();
         setSelectedServices([]);
+        statusRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
       }, 1500);
       return;
     }
@@ -77,6 +94,10 @@ export default function ContactForm() {
           });
           formRef.current?.reset();
           setSelectedServices([]);
+          statusRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
         },
         (error) => {
           console.error("EmailJS Error:", error);
@@ -84,6 +105,10 @@ export default function ContactForm() {
             success: false,
             message:
               "Oops! Something went wrong while sending your message. Please try again.",
+          });
+          statusRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
           });
         },
       )
@@ -93,7 +118,10 @@ export default function ContactForm() {
   };
 
   return (
-    <section id="contact" className="w-full max-w-[1200px] mx-auto px-4 sm:px-8 py-12">
+    <section
+      id="contact"
+      className="w-full max-w-[1200px] mx-auto px-4 sm:px-8 py-12"
+    >
       {/* Header divider decor */}
       <div className="text-center mb-12">
         {/* Top Gold Divider */}
@@ -294,9 +322,9 @@ export default function ContactForm() {
             value={selectedServices.join(", ")}
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-3 gap-x-6">
             {/* Photography */}
-            <label className="flex items-center gap-3 cursor-pointer group">
+            <label className="flex items-center gap-3 p-3 rounded-lg border border-[#BF9F72]/20 bg-[#FAF8F5]/50 hover:border-[#BF9F72] transition-all duration-200 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={selectedServices.includes("Photography")}
@@ -312,7 +340,7 @@ export default function ContactForm() {
             </label>
 
             {/* Videography */}
-            <label className="flex items-center gap-3 cursor-pointer group">
+            <label className="flex items-center gap-3 p-3 rounded-lg border border-[#BF9F72]/20 bg-[#FAF8F5]/50 hover:border-[#BF9F72] transition-all duration-200 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={selectedServices.includes("Videography")}
@@ -328,7 +356,7 @@ export default function ContactForm() {
             </label>
 
             {/* Second Photographer */}
-            <label className="flex items-center gap-3 cursor-pointer group">
+            <label className="flex items-center gap-3 p-3 rounded-lg border border-[#BF9F72]/20 bg-[#FAF8F5]/50 hover:border-[#BF9F72] transition-all duration-200 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={selectedServices.includes(
@@ -343,12 +371,12 @@ export default function ContactForm() {
                 <Users size={18} />
               </span>
               <span className="text-[11px] font-bold tracking-[0.1em] text-gray-800 uppercase font-serif">
-                Second Photographer or Videographer
+                Second Photographer / Videographer
               </span>
             </label>
 
             {/* Engagement Session */}
-            <label className="flex items-center gap-3 cursor-pointer group">
+            <label className="flex items-center gap-3 p-3 rounded-lg border border-[#BF9F72]/20 bg-[#FAF8F5]/50 hover:border-[#BF9F72] transition-all duration-200 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={selectedServices.includes("Engagement Session")}
@@ -364,7 +392,7 @@ export default function ContactForm() {
             </label>
 
             {/* Album / Prints */}
-            <label className="flex items-center gap-3 cursor-pointer group">
+            <label className="flex items-center gap-3 p-3 rounded-lg border border-[#BF9F72]/20 bg-[#FAF8F5]/50 hover:border-[#BF9F72] transition-all duration-200 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={selectedServices.includes("Album / Prints")}
@@ -375,12 +403,12 @@ export default function ContactForm() {
                 <BookOpen size={18} />
               </span>
               <span className="text-[11px] font-bold tracking-[0.1em] text-gray-800 uppercase font-serif">
-                Album/Prints
+                Album / Prints
               </span>
             </label>
 
             {/* Rehearsal Dinner */}
-            <label className="flex items-center gap-3 cursor-pointer group">
+            <label className="flex items-center gap-3 p-3 rounded-lg border border-[#BF9F72]/20 bg-[#FAF8F5]/50 hover:border-[#BF9F72] transition-all duration-200 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={selectedServices.includes("Rehearsal Dinner")}
@@ -396,7 +424,7 @@ export default function ContactForm() {
             </label>
 
             {/* Multi-Day Event */}
-            <label className="flex items-center gap-3 cursor-pointer group">
+            <label className="flex items-center gap-3 p-3 rounded-lg border border-[#BF9F72]/20 bg-[#FAF8F5]/50 hover:border-[#BF9F72] transition-all duration-200 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={selectedServices.includes("Multi-Day Event")}
@@ -414,17 +442,19 @@ export default function ContactForm() {
         </div>
 
         {/* Status Alerts */}
-        {status && (
-          <div
-            className={`p-4 rounded-lg text-sm border font-serif ${
-              status.success
-                ? "bg-[#BF9F72]/10 border-[#BF9F72]/30 text-gray-800"
-                : "bg-red-50 border-red-200 text-red-700"
-            }`}
-          >
-            {status.message}
-          </div>
-        )}
+        <div ref={statusRef}>
+          {status && (
+            <div
+              className={`p-4 rounded-lg text-sm border font-serif transition-all duration-300 ${
+                status.success
+                  ? "bg-[#BF9F72]/10 border-[#BF9F72]/30 text-gray-800"
+                  : "bg-red-50 border-red-200 text-red-700"
+              }`}
+            >
+              {status.message}
+            </div>
+          )}
+        </div>
 
         {/* Submit Section */}
         <div className="flex flex-col items-start gap-4">

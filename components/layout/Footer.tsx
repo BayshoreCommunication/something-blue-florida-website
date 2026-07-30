@@ -3,7 +3,14 @@
 import Image from "next/image";
 import LazyImage from "components/common/LazyImage";
 import Link from "next/link";
-import { Mail, Phone, Instagram, Facebook, Compass, Music2 } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  Instagram,
+  Facebook,
+  Compass,
+  Music2,
+} from "lucide-react";
 import Container from "./Container";
 
 export default function Footer() {
@@ -18,21 +25,20 @@ export default function Footer() {
 
   return (
     <footer className="w-full bg-[#FAF8F5]">
-      
       {/* 1. HORIZONTAL IMAGE BANNER (Instagram Feed Style) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-0 w-full overflow-hidden border-b border-black">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-0 w-full overflow-hidden border-b border-black">
         {footerImages.map((src, index) => (
           <div
             key={index}
             className={`relative aspect-[3/4] w-full overflow-hidden group select-none ${
               index === 4 ? "hidden lg:block" : ""
-            } ${index === 3 ? "hidden sm:block" : ""}`}
+            }`}
           >
             <LazyImage
               src={src}
               alt={`Footer wedding gallery image ${index + 1}`}
               fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+              sizes="(max-width: 1024px) 25vw, 20vw"
               className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
             />
           </div>
@@ -43,7 +49,6 @@ export default function Footer() {
       <div className="py-16 sm:py-20 border-b border-[#BF9F72]/20">
         <Container className="max-w-[1200px] px-6 sm:px-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8 items-center">
-            
             {/* Left Column: Logo & Contact */}
             <div className="flex flex-col items-center text-center">
               {/* Monogram logo image */}
@@ -102,7 +107,9 @@ export default function Footer() {
               {/* Gold Divider Line */}
               <div className="flex items-center justify-center gap-3 mb-8 select-none">
                 <div className="h-[1px] w-16 bg-[#BF9F72]/50" />
-                <span className="text-[#BF9F72] text-[8px] transform rotate-45">◆</span>
+                <span className="text-[#BF9F72] text-[8px] transform rotate-45">
+                  ◆
+                </span>
                 <div className="h-[1px] w-16 bg-[#BF9F72]/50" />
               </div>
 
@@ -154,7 +161,6 @@ export default function Footer() {
                 </a>
               </div>
             </div>
-
           </div>
         </Container>
       </div>
@@ -163,13 +169,18 @@ export default function Footer() {
       <div className="py-8 bg-[#FAF8F5]">
         <div className="flex items-center justify-center gap-4 text-[10px] sm:text-[11px] font-semibold tracking-[0.2em] text-gray-700 uppercase font-serif px-4 text-center">
           <div className="hidden sm:block h-[1px] w-12 sm:w-20 bg-[#BF9F72]/50" />
-          <span className="text-[#BF9F72] text-[8px] transform rotate-45 hidden sm:inline">◆</span>
-          <span>&copy; {new Date().getFullYear()} Something Blue Wedding Photography</span>
-          <span className="text-[#BF9F72] text-[8px] transform rotate-45 hidden sm:inline">◆</span>
+          <span className="text-[#BF9F72] text-[8px] transform rotate-45 hidden sm:inline">
+            ◆
+          </span>
+          <span>
+            &copy; {new Date().getFullYear()} Something Blue Wedding Photography
+          </span>
+          <span className="text-[#BF9F72] text-[8px] transform rotate-45 hidden sm:inline">
+            ◆
+          </span>
           <div className="hidden sm:block h-[1px] w-12 sm:w-20 bg-[#BF9F72]/50" />
         </div>
       </div>
-
     </footer>
   );
 }
