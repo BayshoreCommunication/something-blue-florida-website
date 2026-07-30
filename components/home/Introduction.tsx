@@ -4,7 +4,10 @@ import Container from "components/layout/Container";
 
 export default function Introduction() {
   return (
-    <section id="about" className="bg-[#FAF8F5] xl:py-20 lg:py-16  py-6 sm:py-8 border-b border-gray-100 relative z-20">
+    <section
+      id="about"
+      className="bg-[#FAF8F5] xl:py-20 lg:py-16  py-6 sm:py-8 border-b border-gray-100 relative z-20"
+    >
       <Container className="max-w-4xl mx-auto px-6 sm:px-8 text-center">
         {/* Section Heading */}
         <div className="mb-8">
@@ -26,7 +29,10 @@ export default function Introduction() {
         {/* Cursive Signature Block */}
         <div className="flex justify-end max-w-[720px] mx-auto mt-6 pr-4 sm:pr-8">
           <p className="font-script text-3xl sm:text-4xl text-gray-800 tracking-wide select-none">
-            - Team Something <span className="text-[#5A8FCE]">Blue</span>
+            - Team Something{" "}
+            <span className="text-[#5A8FCE] font-script text-3xl sm:text-4x">
+              Blue
+            </span>
           </p>
         </div>
       </Container>

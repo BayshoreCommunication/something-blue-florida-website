@@ -17,12 +17,13 @@ export default function RecentStories() {
   const stories = storiesData as Story[];
 
   return (
-    <section id="reviews" className="bg-[#FAF8F5] py-20 sm:py-28 border-b border-gray-150/50 relative z-20 select-none">
+    <section
+      id="reviews"
+      className="bg-[#FAF8F5] py-20 sm:py-28 border-b border-gray-150/50 relative z-20 select-none"
+    >
       <Container className="w-full max-w-[1440px] px-4 sm:px-16 lg:px-8">
-        
         {/* Responsive Grid Structure mapping to reference image layout */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
-          
           {/* Column 1: Short Image (0) then Tall Image (4) */}
           <div className="flex flex-col gap-12 sm:gap-16">
             <StoryCard story={stories[0]} isTall={false} />
@@ -46,7 +47,6 @@ export default function RecentStories() {
             <StoryCard story={stories[3]} isTall={true} />
             <StoryCard story={stories[7]} isTall={false} />
           </div>
-
         </div>
       </Container>
     </section>

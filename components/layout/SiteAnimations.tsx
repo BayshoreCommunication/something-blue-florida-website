@@ -8,8 +8,16 @@ type SiteAnimationsProps = {
   rootRef: RefObject<HTMLElement>;
 };
 
+// ১. GSAP Plugin-কে কম্পোনেন্টের বাইরে বিশ্বজনীনভাবে (Globally) রেজিস্টার করুন
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 function isReducedMotion() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 }
 
 function isFillImage(image: HTMLImageElement) {
@@ -18,7 +26,7 @@ function isFillImage(image: HTMLImageElement) {
 
 function isHandledByMotion(element: Element) {
   return Boolean(
-    element.closest(".dxg-motion") || element.classList.contains("dxg-motion")
+    element.closest(".dxg-motion") || element.classList.contains("dxg-motion"),
   );
 }
 
@@ -30,16 +38,16 @@ export default function SiteAnimations({ rootRef }: SiteAnimationsProps) {
       return;
     }
 
-    gsap.registerPlugin(ScrollTrigger);
-
+    // ২. GSAP Context তৈরি
     const context = gsap.context(() => {
+      // Cards Animation
       const cards = gsap.utils
         .toArray<HTMLElement>(
           "article, section .grid > div[class*='rounded'], section .grid > a[class*='rounded']",
-          root
+          root,
         )
         .filter(
-          (card) => !card.closest(".marquee-track") && !isHandledByMotion(card)
+          (card) => !card.closest(".marquee-track") && !isHandledByMotion(card),
         );
 
       cards.forEach((card, index) => {
@@ -59,6 +67,7 @@ export default function SiteAnimations({ rootRef }: SiteAnimationsProps) {
         });
       });
 
+      // Images Animation
       const images = gsap.utils
         .toArray<HTMLImageElement>("section img", root)
         .filter(
@@ -66,7 +75,7 @@ export default function SiteAnimations({ rootRef }: SiteAnimationsProps) {
             !isFillImage(image) &&
             !image.closest(".marquee-track") &&
             !image.closest("button") &&
-            !isHandledByMotion(image)
+            !isHandledByMotion(image),
         );
 
       images.forEach((image) => {
@@ -92,7 +101,7 @@ export default function SiteAnimations({ rootRef }: SiteAnimationsProps) {
               duration: 1.05,
               ease: "power4.out",
               clearProps: "clipPath",
-            }
+            },
           )
           .from(
             image,
@@ -102,21 +111,22 @@ export default function SiteAnimations({ rootRef }: SiteAnimationsProps) {
               ease: "power4.out",
               clearProps: "transform",
             },
-            0
+            0,
           );
       });
 
+      // Content Blocks Animation
       const contentBlocks = gsap.utils
         .toArray<HTMLElement>(
           "section h1, section h2, section h3, section p, section li, section a.btn-primary, section a.btn-outline",
-          root
+          root,
         )
         .filter(
           (block) =>
             !block.closest(".marquee-track") &&
             !block.closest(".typing-title") &&
             !block.closest("article") &&
-            !isHandledByMotion(block)
+            !isHandledByMotion(block),
         );
 
       contentBlocks.forEach((block, index) => {
@@ -135,9 +145,10 @@ export default function SiteAnimations({ rootRef }: SiteAnimationsProps) {
         });
       });
 
+      // Split Blocks Animation
       const splitBlocks = gsap.utils.toArray<HTMLElement>(
         "section .grid > div:not([class*='rounded'])",
-        root
+        root,
       );
 
       splitBlocks.forEach((block, index) => {
@@ -165,7 +176,15 @@ export default function SiteAnimations({ rootRef }: SiteAnimationsProps) {
       });
     }, root);
 
-    return () => context.revert();
+    // ৩. DOM রেন্ডার কমপ্লিট হওয়ার পর ScrollTrigger রিফ্রেশ করা (একদম নিরাপদ রাখার জন্য)
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      context.revert();
+    };
   }, [rootRef]);
 
   return null;

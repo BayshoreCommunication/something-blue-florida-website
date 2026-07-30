@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import LazyImage from "components/common/LazyImage";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import imagesData from "data/portfolio.json";
@@ -8,20 +8,74 @@ import imagesData from "data/portfolio.json";
 export default function PortfolioGrid() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
-  const rows: string[][] = [];
+  // 1. Fixed constants & batch state logic
+  const BATCH_SIZE = 3; // 3 rows = 15 images per batch
+
+  const [visibleRowsCount, setVisibleRowsCount] = useState<number>(3); // Initially 3 rows (15 images)
+  const [targetBatchLimit, setTargetBatchLimit] = useState<number>(3); // Pause point for current batch (3, 6, 9...)
+  const [isPaused, setIsPaused] = useState<boolean>(false); // Paused state controller
+
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  // Split images into rows of 5
+  const allRows: string[][] = [];
   for (let i = 0; i < imagesData.length; i += 5) {
     if (i + 5 <= imagesData.length) {
-      rows.push(imagesData.slice(i, i + 5));
+      allRows.push(imagesData.slice(i, i + 5));
     }
   }
 
-  // Convert portfolio .jpg/.png/.svg paths to .webp (same logic as LazyImage)
+  const visibleRows = allRows.slice(0, visibleRowsCount);
+  const hasMore = visibleRowsCount < allRows.length;
+
+  // 2. Observer setup with explicit target checks
+  useEffect(() => {
+    if (isPaused || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting) {
+          setVisibleRowsCount((prev) => {
+            const next = prev + 1;
+
+            // If loading the next row hits or exceeds our batch limit, pause infinite scroll
+            if (next >= targetBatchLimit) {
+              setIsPaused(true);
+            }
+
+            return Math.min(next, allRows.length);
+          });
+        }
+      },
+      {
+        root: null,
+        rootMargin: "200px",
+        threshold: 0.1,
+      },
+    );
+
+    const currentRef = loadMoreRef.current;
+    if (currentRef) observer.observe(currentRef);
+
+    return () => {
+      if (currentRef) observer.unobserve(currentRef);
+    };
+  }, [isPaused, hasMore, targetBatchLimit, allRows.length]);
+
+  // Handler when clicking "Show More Portfolio"
+  const handleShowMore = () => {
+    setTargetBatchLimit((prev) => prev + BATCH_SIZE); // Expand target limit by 3 more rows (15 images)
+    setIsPaused(false); // Unpause auto-scroll
+  };
+
+  // Helper utility to convert image extensions to WebP
   const toWebP = (src: string) =>
     src.startsWith("/images/portfolio/")
       ? src.replace(/\.(jpg|jpeg|png|svg)$/i, ".webp")
       : src;
 
-  // Handle lightbox keyboard navigation
+  // Handle keyboard navigation for active lightbox modal
   useEffect(() => {
     if (activeIdx === null) return;
 
@@ -45,7 +99,7 @@ export default function PortfolioGrid() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [activeIdx]);
 
-  // Preload adjacent images when lightbox opens / navigates
+  // Preload adjacent images for smooth lightbox navigation
   useEffect(() => {
     if (activeIdx === null) return;
     const idxs = [
@@ -59,7 +113,7 @@ export default function PortfolioGrid() {
     });
   }, [activeIdx]);
 
-  // Lock scroll when lightbox is active
+  // Lock background page scroll when lightbox modal is open
   useEffect(() => {
     if (activeIdx !== null) {
       document.body.style.overflow = "hidden";
@@ -86,9 +140,12 @@ export default function PortfolioGrid() {
   };
 
   return (
-    <section id="portfolio" className="bg-[#0b0c10] py-1 border-y border-black select-none overflow-hidden">
+    <section
+      id="portfolio"
+      className="bg-[#0b0c10] py-1 border-y border-black select-none overflow-hidden"
+    >
       <div className="flex flex-col gap-3 md:gap-1">
-        {rows.map((rowImages, rowIndex) => {
+        {visibleRows.map((rowImages, rowIndex) => {
           const isEvenRow = rowIndex % 2 === 0;
 
           return (
@@ -98,7 +155,7 @@ export default function PortfolioGrid() {
             >
               {isEvenRow ? (
                 <>
-                  {/* Large Left */}
+                  {/* Large Left Column */}
                   <div className="col-span-2 md:col-span-6">
                     <div
                       onClick={() => setActiveIdx(rowIndex * 5 + 0)}
@@ -205,7 +262,7 @@ export default function PortfolioGrid() {
                     </div>
                   </div>
 
-                  {/* Large Right */}
+                  {/* Large Right Column */}
                   <div className="col-span-2 md:col-span-6">
                     <div
                       onClick={() => setActiveIdx(rowIndex * 5 + 4)}
@@ -227,6 +284,22 @@ export default function PortfolioGrid() {
           );
         })}
       </div>
+
+      {/* 3. Bottom Control: Render button when target batch limit is reached */}
+      {hasMore && (
+        <div ref={loadMoreRef} className="py-6 text-center bg-[#0b0c10]">
+          {isPaused || visibleRowsCount >= targetBatchLimit ? (
+            <button
+              onClick={handleShowMore}
+              className="px-8 py-3.5 text-[12px] font-medium tracking-[0.25em] uppercase text-white bg-transparent border border-white/20 hover:border-[#BF9F72] hover:text-[#BF9F72] transition-all duration-300 cursor-pointer"
+            >
+              Show More Portfolio
+            </button>
+          ) : (
+            <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-[#BF9F72] border-r-transparent align-[-0.125em]" />
+          )}
+        </div>
+      )}
 
       {/* LIGHTBOX MODAL OVERLAY */}
       {activeIdx !== null && (
@@ -252,7 +325,7 @@ export default function PortfolioGrid() {
             <ChevronLeft size={28} />
           </button>
 
-          {/* Image Viewer */}
+          {/* Image Viewer Container */}
           <div
             onClick={(e) => e.stopPropagation()}
             className="relative max-w-[90vw] max-h-[80vh] sm:max-h-[85vh] transition-transform duration-500 transform animate-scaleIn select-none"
