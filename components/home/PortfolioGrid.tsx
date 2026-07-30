@@ -24,22 +24,23 @@ const CATEGORIES = [
 ] as const;
 type Category = (typeof CATEGORIES)[number];
 
+// JSON Data structure interface
+interface PortfolioItem {
+  src: string;
+  category: Category;
+}
+
 export default function PortfolioGrid() {
   const [activeCategory, setActiveCategory] = useState<Category>("ALL");
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
-  // 1. Dynamic Category Assignment Logic from raw string array JSON
+  // 1. Direct Category Mapping from updated JSON structure
   const categorizedImages = useMemo(() => {
-    const categoriesList: Category[] = [
-      "WEDDINGS",
-      "PORTRAITS",
-      "COUPLES",
-      "EVENTS",
-    ];
-    return imagesData.map((src, index) => {
-      const category = categoriesList[index % categoriesList.length];
-      return { src, category, originalIndex: index };
-    });
+    return (imagesData as PortfolioItem[]).map((item, index) => ({
+      src: item.src,
+      category: item.category,
+      originalIndex: index,
+    }));
   }, []);
 
   // Filtered dataset based on active tab
@@ -87,7 +88,6 @@ export default function PortfolioGrid() {
       if (i + 5 <= filteredData.length) {
         rows.push(filteredData.slice(i, i + 5));
       } else {
-        // Handle remaining items gracefully
         rows.push(filteredData.slice(i));
       }
     }
