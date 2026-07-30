@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import LazyImage from "components/common/LazyImage";
 import {
   ChevronLeft,
@@ -14,15 +14,52 @@ import imagesData from "data/portfolio.json";
 import gsap from "gsap";
 import Image from "next/image";
 
+// Category definitions
+const CATEGORIES = [
+  "ALL",
+  "WEDDINGS",
+  "PORTRAITS",
+  "COUPLES",
+  "EVENTS",
+] as const;
+type Category = (typeof CATEGORIES)[number];
+
 export default function PortfolioGrid() {
+  const [activeCategory, setActiveCategory] = useState<Category>("ALL");
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
-  // 1. Fixed constants & batch state logic
-  const BATCH_SIZE = 3;
+  // 1. Dynamic Category Assignment Logic from raw string array JSON
+  const categorizedImages = useMemo(() => {
+    const categoriesList: Category[] = [
+      "WEDDINGS",
+      "PORTRAITS",
+      "COUPLES",
+      "EVENTS",
+    ];
+    return imagesData.map((src, index) => {
+      const category = categoriesList[index % categoriesList.length];
+      return { src, category, originalIndex: index };
+    });
+  }, []);
 
+  // Filtered dataset based on active tab
+  const filteredData = useMemo(() => {
+    if (activeCategory === "ALL") return categorizedImages;
+    return categorizedImages.filter((item) => item.category === activeCategory);
+  }, [activeCategory, categorizedImages]);
+
+  // 2. Fixed constants & batch state logic
+  const BATCH_SIZE = 3;
   const [visibleRowsCount, setVisibleRowsCount] = useState<number>(3);
   const [targetBatchLimit, setTargetBatchLimit] = useState<number>(3);
   const [isPaused, setIsPaused] = useState<boolean>(false);
+
+  // Reset batching state whenever category changes
+  useEffect(() => {
+    setVisibleRowsCount(3);
+    setTargetBatchLimit(3);
+    setIsPaused(false);
+  }, [activeCategory]);
 
   // Lightbox Zoom & Pan (Drag) State
   const [zoomLevel, setZoomLevel] = useState<number>(1);
@@ -36,22 +73,42 @@ export default function PortfolioGrid() {
     y: 0,
   });
 
-  // Custom Cursor & Parallax Refs
+  // Custom Cursor & Refs
   const gridSectionRef = useRef<HTMLElement | null>(null);
+  const gridRowsContainerRef = useRef<HTMLDivElement | null>(null);
   const cursorRef = useRef<HTMLDivElement | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const thumbnailContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Split images into rows of 5
-  const allRows: string[][] = [];
-  for (let i = 0; i < imagesData.length; i += 5) {
-    if (i + 5 <= imagesData.length) {
-      allRows.push(imagesData.slice(i, i + 5));
+  // Split filtered images into rows of 5
+  const allRows = useMemo(() => {
+    const rows: Array<typeof filteredData> = [];
+    for (let i = 0; i < filteredData.length; i += 5) {
+      if (i + 5 <= filteredData.length) {
+        rows.push(filteredData.slice(i, i + 5));
+      } else {
+        // Handle remaining items gracefully
+        rows.push(filteredData.slice(i));
+      }
     }
-  }
+    return rows;
+  }, [filteredData]);
 
   const visibleRows = allRows.slice(0, visibleRowsCount);
   const hasMore = visibleRowsCount < allRows.length;
+
+  // GSAP Animation when active category changes
+  const handleCategoryChange = (cat: Category) => {
+    if (cat === activeCategory) return;
+    if (gridRowsContainerRef.current) {
+      gsap.fromTo(
+        gridRowsContainerRef.current,
+        { opacity: 0.3, y: 15 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" },
+      );
+    }
+    setActiveCategory(cat);
+  };
 
   // Helper utility to convert image extensions to WebP
   const toWebP = (src: string) =>
@@ -65,7 +122,7 @@ export default function PortfolioGrid() {
     setPanPosition({ x: 0, y: 0 });
   };
 
-  // 2. Custom Magnetic Hover Cursor Logic for Grid
+  // 3. Custom Magnetic Hover Cursor Logic
   useEffect(() => {
     if (!gridSectionRef.current || !cursorRef.current) return;
 
@@ -117,7 +174,7 @@ export default function PortfolioGrid() {
     }
   };
 
-  // 3. Observer setup for Hybrid Infinite Scroll
+  // 4. Observer setup for Hybrid Infinite Scroll
   useEffect(() => {
     if (isPaused || !hasMore) return;
 
@@ -161,13 +218,13 @@ export default function PortfolioGrid() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") {
         setActiveIdx((prev) =>
-          prev !== null ? (prev + 1) % imagesData.length : null,
+          prev !== null ? (prev + 1) % filteredData.length : null,
         );
         resetZoomAndPan();
       } else if (e.key === "ArrowLeft") {
         setActiveIdx((prev) =>
           prev !== null
-            ? (prev - 1 + imagesData.length) % imagesData.length
+            ? (prev - 1 + filteredData.length) % filteredData.length
             : null,
         );
         resetZoomAndPan();
@@ -179,21 +236,21 @@ export default function PortfolioGrid() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeIdx]);
+  }, [activeIdx, filteredData.length]);
 
   // Preload adjacent images
   useEffect(() => {
     if (activeIdx === null) return;
     const idxs = [
       activeIdx,
-      (activeIdx + 1) % imagesData.length,
-      (activeIdx - 1 + imagesData.length) % imagesData.length,
+      (activeIdx + 1) % filteredData.length,
+      (activeIdx - 1 + filteredData.length) % filteredData.length,
     ];
     idxs.forEach((i) => {
       const img = new window.Image();
-      img.src = toWebP(imagesData[i]);
+      img.src = toWebP(filteredData[i].src);
     });
-  }, [activeIdx]);
+  }, [activeIdx, filteredData]);
 
   // Lock background scroll when lightbox is active
   useEffect(() => {
@@ -226,7 +283,9 @@ export default function PortfolioGrid() {
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
     setActiveIdx((prev) =>
-      prev !== null ? (prev - 1 + imagesData.length) % imagesData.length : null,
+      prev !== null
+        ? (prev - 1 + filteredData.length) % filteredData.length
+        : null,
     );
     resetZoomAndPan();
   };
@@ -234,7 +293,7 @@ export default function PortfolioGrid() {
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
     setActiveIdx((prev) =>
-      prev !== null ? (prev + 1) % imagesData.length : null,
+      prev !== null ? (prev + 1) % filteredData.length : null,
     );
     resetZoomAndPan();
   };
@@ -272,7 +331,6 @@ export default function PortfolioGrid() {
     setIsDragging(false);
   };
 
-  // Touch support for Mobile Dragging
   const handleTouchStart = (e: React.TouchEvent) => {
     if (zoomLevel <= 1) return;
     const touch = e.touches[0];
@@ -293,37 +351,46 @@ export default function PortfolioGrid() {
   };
 
   // Helper render method for each image card
-  const renderImageCard = (imgSrc: string, globalIndex: number) => (
-    <div
-      onClick={() => {
-        setActiveIdx(globalIndex);
-        resetZoomAndPan();
-      }}
-      onMouseEnter={handleMouseEnterCard}
-      onMouseLeave={handleMouseLeaveCard}
-      className="relative overflow-hidden group cursor-none w-full h-full"
-    >
-      <LazyImage
-        src={imgSrc}
-        alt={`Portfolio image ${globalIndex + 1}`}
-        width={2000}
-        height={1500}
-        quality={100}
-        className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-108"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4 pointer-events-none">
-        <span className="text-white/90 text-[11px] uppercase tracking-[0.2em] font-light">
-          Story #{globalIndex + 1}
-        </span>
+  const renderImageCard = (
+    item: (typeof filteredData)[number],
+    gridIndex: number,
+  ) => {
+    if (!item) return null;
+    return (
+      <div
+        onClick={() => {
+          setActiveIdx(gridIndex);
+          resetZoomAndPan();
+        }}
+        onMouseEnter={handleMouseEnterCard}
+        onMouseLeave={handleMouseLeaveCard}
+        className="relative overflow-hidden group cursor-none w-full h-full min-h-[220px]"
+      >
+        <LazyImage
+          src={item.src}
+          alt={`Portfolio image ${gridIndex + 1}`}
+          width={2000}
+          height={1500}
+          quality={100}
+          className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-108 w-full h-full"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex justify-between items-end p-4 pointer-events-none">
+          <span className="text-white/90 text-[11px] uppercase tracking-[0.2em] font-light">
+            Story #{item.originalIndex + 1}
+          </span>
+          <span className="text-[#BF9F72] text-[10px] uppercase tracking-[0.15em] font-medium border border-[#BF9F72]/40 px-2 py-0.5 rounded-sm bg-black/40 backdrop-blur-sm">
+            {item.category}
+          </span>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <section
       ref={gridSectionRef}
       id="portfolio"
-      className="bg-[#0b0c10] py-1 border-y border-black select-none overflow-hidden relative"
+      className="bg-[#0b0c10] py-8 border-y border-black select-none overflow-hidden relative"
     >
       {/* MAGNETIC "VIEW" HOVER CURSOR */}
       <div
@@ -333,7 +400,28 @@ export default function PortfolioGrid() {
         VIEW
       </div>
 
-      <div className="flex flex-col gap-3 md:gap-1">
+      {/* FILTER / CATEGORY TABS BAR */}
+      <div className="max-w-6xl mx-auto px-4 mb-8 flex flex-wrap justify-center items-center gap-3 sm:gap-6 z-20 relative">
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => handleCategoryChange(cat)}
+            className={`px-5 py-2 text-[11px] sm:text-[12px] font-medium tracking-[0.25em] uppercase transition-all duration-300 relative cursor-pointer ${
+              activeCategory === cat
+                ? "text-[#BF9F72]"
+                : "text-white/60 hover:text-white"
+            }`}
+          >
+            {cat}
+            {activeCategory === cat && (
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#BF9F72] animate-fadeIn" />
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* GRID ROWS CONTAINER */}
+      <div ref={gridRowsContainerRef} className="flex flex-col gap-3 md:gap-1">
         {visibleRows.map((rowImages, rowIndex) => {
           const isEvenRow = rowIndex % 2 === 0;
 
@@ -349,20 +437,26 @@ export default function PortfolioGrid() {
                   </div>
                   <div className="col-span-1 md:col-span-3">
                     <div className="grid grid-rows-2 gap-3 md:gap-1 h-full">
-                      {[rowImages[1], rowImages[2]].map((img, i) => (
-                        <div key={i}>
-                          {renderImageCard(img, rowIndex * 5 + i + 1)}
-                        </div>
-                      ))}
+                      {[rowImages[1], rowImages[2]].map(
+                        (img, i) =>
+                          img && (
+                            <div key={i}>
+                              {renderImageCard(img, rowIndex * 5 + i + 1)}
+                            </div>
+                          ),
+                      )}
                     </div>
                   </div>
                   <div className="col-span-1 md:col-span-3">
                     <div className="grid grid-rows-2 gap-3 md:gap-1 h-full">
-                      {[rowImages[3], rowImages[4]].map((img, i) => (
-                        <div key={i}>
-                          {renderImageCard(img, rowIndex * 5 + i + 3)}
-                        </div>
-                      ))}
+                      {[rowImages[3], rowImages[4]].map(
+                        (img, i) =>
+                          img && (
+                            <div key={i}>
+                              {renderImageCard(img, rowIndex * 5 + i + 3)}
+                            </div>
+                          ),
+                      )}
                     </div>
                   </div>
                 </>
@@ -370,24 +464,31 @@ export default function PortfolioGrid() {
                 <>
                   <div className="col-span-1 md:col-span-3">
                     <div className="grid grid-rows-2 gap-3 md:gap-1 h-full">
-                      {[rowImages[0], rowImages[1]].map((img, i) => (
-                        <div key={i}>
-                          {renderImageCard(img, rowIndex * 5 + i + 0)}
-                        </div>
-                      ))}
+                      {[rowImages[0], rowImages[1]].map(
+                        (img, i) =>
+                          img && (
+                            <div key={i}>
+                              {renderImageCard(img, rowIndex * 5 + i + 0)}
+                            </div>
+                          ),
+                      )}
                     </div>
                   </div>
                   <div className="col-span-1 md:col-span-3">
                     <div className="grid grid-rows-2 gap-3 md:gap-1 h-full">
-                      {[rowImages[2], rowImages[3]].map((img, i) => (
-                        <div key={i}>
-                          {renderImageCard(img, rowIndex * 5 + i + 2)}
-                        </div>
-                      ))}
+                      {[rowImages[2], rowImages[3]].map(
+                        (img, i) =>
+                          img && (
+                            <div key={i}>
+                              {renderImageCard(img, rowIndex * 5 + i + 2)}
+                            </div>
+                          ),
+                      )}
                     </div>
                   </div>
                   <div className="col-span-2 md:col-span-6">
-                    {renderImageCard(rowImages[4], rowIndex * 5 + 4)}
+                    {rowImages[4] &&
+                      renderImageCard(rowImages[4], rowIndex * 5 + 4)}
                   </div>
                 </>
               )}
@@ -398,7 +499,7 @@ export default function PortfolioGrid() {
 
       {/* Bottom Batch Load Control */}
       {hasMore && (
-        <div ref={loadMoreRef} className="py-8 text-center bg-[#0b0c10]">
+        <div ref={loadMoreRef} className="pt-8 text-center bg-[#0b0c10]">
           {isPaused || visibleRowsCount >= targetBatchLimit ? (
             <button
               onClick={handleShowMore}
@@ -413,7 +514,7 @@ export default function PortfolioGrid() {
       )}
 
       {/* ADVANCED LIGHTBOX MODAL */}
-      {activeIdx !== null && (
+      {activeIdx !== null && filteredData[activeIdx] && (
         <div
           onClick={() => {
             setActiveIdx(null);
@@ -427,7 +528,7 @@ export default function PortfolioGrid() {
             className="w-full max-w-6xl flex justify-between items-center z-[120] px-4"
           >
             <div className="text-white/70 text-[12px] tracking-[0.2em] font-serif uppercase">
-              {activeIdx + 1} / {imagesData.length}
+              {activeIdx + 1} / {filteredData.length}
             </div>
 
             <div className="flex items-center gap-3">
@@ -458,7 +559,9 @@ export default function PortfolioGrid() {
                 <ZoomOut size={18} />
               </button>
               <button
-                onClick={(e) => handleImageDownload(e, imagesData[activeIdx])}
+                onClick={(e) =>
+                  handleImageDownload(e, filteredData[activeIdx].src)
+                }
                 className="text-white/80 hover:text-[#BF9F72] p-2.5 bg-white/5 hover:bg-white/10 rounded-full transition-colors"
                 title="Download High Res Image"
               >
@@ -486,7 +589,7 @@ export default function PortfolioGrid() {
             <ChevronLeft size={28} />
           </button>
 
-          {/* Main Focused Image Container (WITH GRAB / DRAG FUNCTIONALITY) */}
+          {/* Main Focused Image Container */}
           <div
             onClick={(e) => e.stopPropagation()}
             onMouseDown={handleMouseDown}
@@ -505,12 +608,14 @@ export default function PortfolioGrid() {
             }`}
           >
             <Image
-              src={toWebP(imagesData[activeIdx])}
+              src={toWebP(filteredData[activeIdx].src)}
               alt={`Selected portfolio image ${activeIdx + 1}`}
+              width={2000}
+              height={1500}
               style={{
-                transform: `scale(${zoomLevel}) translate(${panPosition.x / zoomLevel}px, ${
-                  panPosition.y / zoomLevel
-                }px)`,
+                transform: `scale(${zoomLevel}) translate(${
+                  panPosition.x / zoomLevel
+                }px, ${panPosition.y / zoomLevel}px)`,
               }}
               className={`max-w-full max-h-[70vh] sm:max-h-[75vh] object-contain shadow-2xl ${
                 isDragging
@@ -538,7 +643,7 @@ export default function PortfolioGrid() {
               ref={thumbnailContainerRef}
               className="flex gap-2 overflow-x-auto no-scrollbar scroll-smooth justify-start sm:justify-center items-center py-1"
             >
-              {imagesData.map((img, idx) => (
+              {filteredData.map((item, idx) => (
                 <button
                   key={idx}
                   onClick={() => {
@@ -552,8 +657,10 @@ export default function PortfolioGrid() {
                   }`}
                 >
                   <Image
-                    src={toWebP(img)}
+                    src={toWebP(item.src)}
                     alt={`Thumbnail ${idx + 1}`}
+                    width={100}
+                    height={100}
                     className="w-full h-full object-cover"
                   />
                 </button>
