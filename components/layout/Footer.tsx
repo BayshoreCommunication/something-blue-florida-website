@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import LazyImage from "components/common/LazyImage";
 import Link from "next/link";
+import footerGalleryImages from "data/footer-gallery.json";
 import {
   Mail,
   Phone,
@@ -14,35 +16,70 @@ import {
 import Container from "./Container";
 
 export default function Footer() {
-  // 5 Portrait showcase photos for the top horizontal footer banner
-  const footerImages = [
-    "/images/portfolio/1.jpg",
-    "/images/portfolio/2.jpg",
-    "/images/portfolio/3.jpg",
-    "/images/portfolio/4.jpg",
-    "/images/portfolio/5.jpg",
-  ];
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const [isGalleryTransitioning, setIsGalleryTransitioning] = useState(true);
+  const [isGalleryPaused, setIsGalleryPaused] = useState(false);
+  const footerImages = footerGalleryImages as string[];
+  const galleryTrackImages = [...footerImages, ...footerImages.slice(0, 5)];
+
+  useEffect(() => {
+    if (isGalleryPaused) return;
+
+    if (galleryIndex === footerImages.length) {
+      const resetTimer = window.setTimeout(() => {
+        setIsGalleryTransitioning(false);
+        setGalleryIndex(0);
+
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => setIsGalleryTransitioning(true));
+        });
+      }, 700);
+
+      return () => window.clearTimeout(resetTimer);
+    }
+
+    const slideTimer = window.setTimeout(
+      () => setGalleryIndex((currentIndex) => currentIndex + 1),
+      2000,
+    );
+
+    return () => window.clearTimeout(slideTimer);
+  }, [footerImages.length, galleryIndex, isGalleryPaused]);
 
   return (
     <footer className="w-full bg-[#FAF8F5]">
       {/* 1. HORIZONTAL IMAGE BANNER (Instagram Feed Style) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-0 w-full overflow-hidden border-b border-black">
-        {footerImages.map((src, index) => (
-          <div
-            key={index}
-            className={`relative aspect-[3/4] w-full overflow-hidden group select-none ${
-              index === 4 ? "hidden lg:block" : ""
-            }`}
-          >
-            <LazyImage
-              src={src}
-              alt={`Footer wedding gallery image ${index + 1}`}
-              fill
-              sizes="(max-width: 1024px) 25vw, 20vw"
-              className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
-            />
-          </div>
-        ))}
+      <div
+        className="w-full overflow-hidden border-b border-black"
+        onMouseEnter={() => setIsGalleryPaused(true)}
+        onMouseLeave={() => setIsGalleryPaused(false)}
+      >
+        <div
+          className={`footer-gallery-track flex w-full will-change-transform motion-reduce:transition-none ${
+            isGalleryTransitioning
+              ? "transition-transform duration-700 ease-in-out"
+              : "transition-none"
+          }`}
+          style={{
+            transform: `translate3d(calc(${galleryIndex} * -100% / var(--footer-slides-visible)), 0, 0)`,
+          }}
+        >
+          {galleryTrackImages.map((src, index) => (
+            <div
+              key={`${src}-${index}`}
+              className="footer-gallery-slide relative aspect-[3/4] overflow-hidden group select-none"
+            >
+              <LazyImage
+                src={src}
+                alt={`Footer wedding gallery image ${(index % footerImages.length) + 1}`}
+                fill
+                sizes="(max-width: 639px) 50vw, (max-width: 1023px) 25vw, 20vw"
+                quality={95}
+                className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* 2. MIDDLE FOOTER (Details & Socials) */}

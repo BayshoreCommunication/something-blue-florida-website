@@ -363,19 +363,32 @@ a.inline-flex,
    Photo Enhancement
 ================================= */
 
-@keyframes skeleton-loading {
-  0%,
-  100% {
-    background-color: #d8d4ce;
+@keyframes image-shimmer-sweep {
+  0% {
+    transform: translateX(-100%);
   }
-  50% {
-    background-color: #ece9e4;
+  100% {
+    transform: translateX(100%);
   }
 }
 
 .image-skeleton {
+  overflow: hidden;
   background-color: #d8d4ce;
-  animation: skeleton-loading 1.4s ease-in-out infinite;
+}
+
+.image-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: image-shimmer-sweep 1.6s ease-in-out infinite;
 }
 
 .photo-enhanced {
@@ -393,4 +406,24 @@ a.inline-flex,
   -webkit-touch-callout: none;
   -webkit-user-drag: none;
   user-select: none;
+}
+/* Responsive sizing for the seamless footer portrait slider. */
+.footer-gallery-track {
+  --footer-slides-visible: 2;
+}
+
+.footer-gallery-slide {
+  flex: 0 0 calc(100% / var(--footer-slides-visible));
+}
+
+@media (min-width: 640px) {
+  .footer-gallery-track {
+    --footer-slides-visible: 4;
+  }
+}
+
+@media (min-width: 1024px) {
+  .footer-gallery-track {
+    --footer-slides-visible: 5;
+  }
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import gsap from "gsap";
+import LazyImage from "components/common/LazyImage";
+import Link from "next/link";
+import { useEffect, useRef } from "react";
 
 export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -32,7 +32,6 @@ export default function Hero() {
             overwrite: "auto",
           });
         }
-
       };
 
       // 2. Camera Flash Light Effect on Click
@@ -79,12 +78,13 @@ export default function Hero() {
       {/* Background Image with smooth looping zoom and pan animation */}
       <div className="absolute inset-0 w-full h-full select-none z-0 overflow-hidden">
         <div className="relative w-full h-full animate-ken-burns">
-          <Image
-            src="/images/home/hero-bg.png"
+          <LazyImage
+            src="/images/home/hero-img.jpg"
             alt="Wedding Photography Background"
             fill
             priority
             quality={95}
+            showSkeleton={false}
             className="object-cover"
           />
         </div>

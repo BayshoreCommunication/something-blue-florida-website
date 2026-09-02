@@ -13,8 +13,26 @@ type Story = {
   slug: string;
 };
 
+// Match landscape photos to the short cards and portraits to the tall cards.
+// Keeping this mapping here limits these review photos to this homepage section.
+const recentStoryImages = [
+  "/images/couples-reviews/1.jpg",
+  "/images/couples-reviews/2.jpg",
+  "/images/couples-reviews/4.jpg",
+  "/images/couples-reviews/3.jpg",
+  "/images/couples-reviews/5.jpg",
+  "/images/couples-reviews/7.jpg",
+  "/images/couples-reviews/6.jpg",
+  "/images/couples-reviews/10.jpg",
+] as const;
+
 export default function RecentStories() {
-  const stories = storiesData as Story[];
+  const stories = (storiesData as Story[]).slice(0, recentStoryImages.length).map(
+    (story, index) => ({
+      ...story,
+      image: recentStoryImages[index],
+    }),
+  );
 
   return (
     <section
@@ -67,6 +85,7 @@ function StoryCard({ story, isTall }: { story: Story; isTall: boolean }) {
           alt={`Wedding photography for ${story.coupleName}`}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          quality={95}
           className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-103"
         />
       </div>

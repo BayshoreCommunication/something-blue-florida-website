@@ -21,7 +21,6 @@ import {
   FaXTwitter,
 } from "react-icons/fa6";
 import imagesData from "data/portfolio.json";
-import Image from "next/image";
 
 interface PortfolioItem {
   src: string;
@@ -89,31 +88,6 @@ export default function PortfolioGrid() {
 
   const visibleRows = allRows.slice(0, visibleRowsCount);
   const hasMore = visibleRowsCount < allRows.length;
-  const [loadedGridImageIndexes, setLoadedGridImageIndexes] = useState<
-    Set<number>
-  >(() => new Set());
-
-  const isGridRowReady = (gridIndex: number) => {
-    const rowStart = Math.floor(gridIndex / 5) * 5;
-    return filteredData
-      .slice(rowStart, rowStart + 5)
-      .every((item) => loadedGridImageIndexes.has(item.originalIndex));
-  };
-
-  const markGridImageReady = (imageIndex: number) => {
-    setLoadedGridImageIndexes((loadedIndexes) => {
-      if (loadedIndexes.has(imageIndex)) return loadedIndexes;
-      const nextIndexes = new Set(loadedIndexes);
-      nextIndexes.add(imageIndex);
-      return nextIndexes;
-    });
-  };
-
-  // Helper utility to convert image extensions to WebP
-  const toWebP = (src: string) =>
-    src.startsWith("/images/portfolio/")
-      ? src.replace(/\.(jpg|jpeg|png|svg)$/i, ".webp")
-      : src;
 
   // Reset Zoom & Pan state helper
   const resetZoomAndPan = () => {
@@ -243,7 +217,9 @@ export default function PortfolioGrid() {
     ];
     idxs.forEach((i) => {
       const img = new window.Image();
-      img.src = toWebP(filteredData[i].src);
+      img.src = `/_next/image?url=${encodeURIComponent(
+        filteredData[i].src,
+      )}&w=3840&q=100`;
     });
   }, [activeIdx, filteredData]);
 
@@ -343,7 +319,7 @@ export default function PortfolioGrid() {
           setActiveIdx(gridIndex);
           resetZoomAndPan();
         }}
-        className="image-skeleton relative z-0 overflow-hidden group cursor-pointer w-full h-full min-h-[220px] transition-transform duration-300 ease-out hover:z-10 hover:scale-[0.97]"
+        className="relative z-0 overflow-hidden group cursor-pointer w-full h-full min-h-[220px] bg-[#d8d4ce] transition-transform duration-300 ease-out hover:z-10 hover:scale-[0.97]"
       >
         <LazyImage
           src={item.src}
@@ -351,12 +327,8 @@ export default function PortfolioGrid() {
           width={item.width}
           height={item.height}
           sizes="(max-width: 767px) 100vw, 50vw"
-          quality={92}
-          onLoad={() => markGridImageReady(item.originalIndex)}
-          onError={() => markGridImageReady(item.originalIndex)}
-          className={`object-cover transition-transform duration-700 ease-in-out group-hover:scale-[1.12] w-full h-full ${
-            isGridRowReady(gridIndex) ? "opacity-100" : "opacity-0"
-          }`}
+          quality={95}
+          className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-[1.12] w-full h-full"
         />
 
         <div className="pointer-events-none absolute inset-0 flex items-end justify-between p-3 opacity-0 transition-opacity duration-300 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 sm:p-4">
@@ -634,12 +606,13 @@ export default function PortfolioGrid() {
                 : "cursor-default"
             }`}
           >
-            <Image
-              src={toWebP(filteredData[activeIdx].src)}
+            <LazyImage
+              src={filteredData[activeIdx].src}
               alt={`Selected portfolio image ${activeIdx + 1}`}
               fill
-              sizes="90vw"
-              quality={95}
+              sizes={zoomLevel > 1 ? "300vw" : "100vw"}
+              quality={100}
+              priority
               draggable={false}
               onContextMenu={(e) => e.preventDefault()}
               onDragStart={(e) => e.preventDefault()}

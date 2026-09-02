@@ -7,13 +7,7 @@ const sourceDirectory = path.join(
   projectRoot,
   "public",
   "images",
-  "for-website",
-);
-const outputDirectory = path.join(
-  projectRoot,
-  "public",
-  "images",
-  "portfolio-optimized",
+  "portfolio",
 );
 const manifestPath = path.join(projectRoot, "data", "portfolio.json");
 
@@ -21,42 +15,26 @@ const sourceFiles = (await fs.readdir(sourceDirectory))
   .filter((fileName) => /\.(jpe?g|png|webp)$/i.test(fileName))
   .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
-await fs.mkdir(outputDirectory, { recursive: true });
-
 const portfolio = [];
 
-for (const [index, fileName] of sourceFiles.entries()) {
-  const outputName = `portfolio-${String(index + 1).padStart(3, "0")}.webp`;
+for (const fileName of sourceFiles) {
   const inputPath = path.join(sourceDirectory, fileName);
-  const outputPath = path.join(outputDirectory, outputName);
+  const metadata = await sharp(inputPath).metadata();
+  const rotated = [5, 6, 7, 8].includes(metadata.orientation ?? 1);
+  const width = rotated ? metadata.height : metadata.width;
+  const height = rotated ? metadata.width : metadata.height;
 
-  const result = await sharp(inputPath)
-    .rotate()
-    .resize({
-      width: 4800,
-      height: 4800,
-      fit: "inside",
-      withoutEnlargement: true,
-      kernel: sharp.kernel.lanczos3,
-    })
-    .webp({
-      quality: 94,
-      alphaQuality: 100,
-      chromaSubsampling: "4:4:4",
-      smartSubsample: true,
-      effort: 5,
-    })
-    .toFile(outputPath);
+  if (!width || !height) {
+    throw new Error(`Unable to read image dimensions for ${fileName}`);
+  }
 
   portfolio.push({
-    src: `/images/portfolio-optimized/${outputName}`,
-    width: result.width,
-    height: result.height,
+    src: `/images/portfolio/${fileName}`,
+    width,
+    height,
   });
 
-  process.stdout.write(
-    `[${index + 1}/${sourceFiles.length}] ${fileName} -> ${outputName}\n`,
-  );
+  process.stdout.write(`[${portfolio.length}/${sourceFiles.length}] ${fileName}\n`);
 }
 
 await fs.writeFile(manifestPath, `${JSON.stringify(portfolio, null, 2)}\n`);
