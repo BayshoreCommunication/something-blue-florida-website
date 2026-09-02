@@ -30,9 +30,9 @@ const placeholders = {};
 for (const [index, imagePath] of imageFiles.entries()) {
   const buffer = await sharp(imagePath)
     .rotate()
-    .resize({ width: 20, height: 20, fit: "inside", withoutEnlargement: true })
-    .blur(1.2)
-    .webp({ quality: 35, effort: 4 })
+    .resize({ width: 24, height: 24, fit: "inside", withoutEnlargement: true })
+    .blur(1.5)
+    .webp({ quality: 40, effort: 4 })
     .toBuffer();
   const publicPath = `/${path
     .relative(publicDirectory, imagePath)

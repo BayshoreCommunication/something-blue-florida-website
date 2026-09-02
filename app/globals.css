@@ -392,13 +392,26 @@ a.inline-flex,
 }
 
 .photo-enhanced {
-  filter: url(#crisp-sharpen) contrast(1.05) saturate(1.03) brightness(1.01);
-  transition: filter 500ms ease, transform 700ms ease !important;
+  transition: filter 650ms ease, transform 700ms ease !important;
 }
 
-.group:hover .photo-enhanced,
-.photo-enhanced:hover {
+.photo-enhanced.photo-loading {
+  filter: blur(18px) saturate(0.9) brightness(0.96);
+}
+
+.photo-enhanced.photo-loaded {
+  filter: url(#crisp-sharpen) contrast(1.05) saturate(1.03) brightness(1.01);
+}
+
+.group:hover .photo-enhanced.photo-loaded,
+.photo-enhanced.photo-loaded:hover {
   filter: url(#crisp-sharpen) contrast(1.08) saturate(1.05) brightness(1.02);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo-enhanced {
+    transition-duration: 0ms !important;
+  }
 }
 
 /* Discourage dragging and long-press saving of portfolio photography. */

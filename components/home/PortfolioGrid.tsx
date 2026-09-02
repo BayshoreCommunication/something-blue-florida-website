@@ -33,12 +33,29 @@ export default function PortfolioGrid() {
   const [wishlistItems, setWishlistItems] = useState<number[]>([]);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isLinkCopied, setIsLinkCopied] = useState(false);
+  const [itemsPerRow, setItemsPerRow] = useState(4);
 
   const filteredData = useMemo(() => {
     return (imagesData as PortfolioItem[]).map((item, index) => ({
       ...item,
       originalIndex: index,
     }));
+  }, []);
+
+  useEffect(() => {
+    const updateItemsPerRow = () => {
+      if (window.innerWidth < 640) {
+        setItemsPerRow(2);
+      } else if (window.innerWidth < 1024) {
+        setItemsPerRow(3);
+      } else {
+        setItemsPerRow(4);
+      }
+    };
+
+    updateItemsPerRow();
+    window.addEventListener("resize", updateItemsPerRow);
+    return () => window.removeEventListener("resize", updateItemsPerRow);
   }, []);
 
   // 2. Fixed constants & batch state logic
@@ -73,18 +90,14 @@ export default function PortfolioGrid() {
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const openShareOnNextImageRef = useRef(false);
 
-  // Split filtered images into rows of 5
+  // Build responsive justified rows so mixed image ratios leave no empty areas.
   const allRows = useMemo(() => {
     const rows: Array<typeof filteredData> = [];
-    for (let i = 0; i < filteredData.length; i += 5) {
-      if (i + 5 <= filteredData.length) {
-        rows.push(filteredData.slice(i, i + 5));
-      } else {
-        rows.push(filteredData.slice(i));
-      }
+    for (let i = 0; i < filteredData.length; i += itemsPerRow) {
+      rows.push(filteredData.slice(i, i + itemsPerRow));
     }
     return rows;
-  }, [filteredData]);
+  }, [filteredData, itemsPerRow]);
 
   const visibleRows = allRows.slice(0, visibleRowsCount);
   const hasMore = visibleRowsCount < allRows.length;
@@ -319,16 +332,17 @@ export default function PortfolioGrid() {
           setActiveIdx(gridIndex);
           resetZoomAndPan();
         }}
-        className="relative z-0 overflow-hidden group cursor-pointer w-full h-full min-h-[220px] bg-[#d8d4ce] transition-transform duration-300 ease-out hover:z-10 hover:scale-[0.97]"
+        style={{ aspectRatio: `${item.width} / ${item.height}` }}
+        className="relative z-0 overflow-hidden group cursor-pointer w-full bg-[#d8d4ce] transition-transform duration-300 ease-out hover:z-10 hover:scale-[0.97]"
       >
         <LazyImage
           src={item.src}
           alt={`Portfolio image ${gridIndex + 1}`}
           width={item.width}
           height={item.height}
-          sizes="(max-width: 767px) 100vw, 50vw"
+          sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 25vw"
           quality={95}
-          className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-[1.12] w-full h-full"
+          className="object-contain transition-transform duration-700 ease-in-out group-hover:scale-[1.08] w-full h-full"
         />
 
         <div className="pointer-events-none absolute inset-0 flex items-end justify-between p-3 opacity-0 transition-opacity duration-300 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 sm:p-4">
@@ -385,81 +399,27 @@ export default function PortfolioGrid() {
       onContextMenu={(e) => e.preventDefault()}
       className="bg-[#0b0c10] py-8 border-y border-black select-none overflow-hidden relative"
     >
-      {/* GRID ROWS CONTAINER */}
-      <div className="flex flex-col gap-3 md:gap-1">
-        {visibleRows.map((rowImages, rowIndex) => {
-          const isEvenRow = rowIndex % 2 === 0;
-
-          return (
-            <div
-              key={rowIndex}
-              className="grid grid-cols-2 md:grid-cols-12 gap-3 md:gap-1 w-full"
-            >
-              {isEvenRow ? (
-                <>
-                  <div className="col-span-2 md:col-span-6">
-                    {renderImageCard(rowImages[0], rowIndex * 5 + 0)}
-                  </div>
-                  <div className="col-span-1 md:col-span-3">
-                    <div className="grid grid-rows-2 gap-3 md:gap-1 h-full">
-                      {[rowImages[1], rowImages[2]].map(
-                        (img, i) =>
-                          img && (
-                            <div key={i}>
-                              {renderImageCard(img, rowIndex * 5 + i + 1)}
-                            </div>
-                          ),
-                      )}
-                    </div>
-                  </div>
-                  <div className="col-span-1 md:col-span-3">
-                    <div className="grid grid-rows-2 gap-3 md:gap-1 h-full">
-                      {[rowImages[3], rowImages[4]].map(
-                        (img, i) =>
-                          img && (
-                            <div key={i}>
-                              {renderImageCard(img, rowIndex * 5 + i + 3)}
-                            </div>
-                          ),
-                      )}
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="col-span-1 md:col-span-3">
-                    <div className="grid grid-rows-2 gap-3 md:gap-1 h-full">
-                      {[rowImages[0], rowImages[1]].map(
-                        (img, i) =>
-                          img && (
-                            <div key={i}>
-                              {renderImageCard(img, rowIndex * 5 + i + 0)}
-                            </div>
-                          ),
-                      )}
-                    </div>
-                  </div>
-                  <div className="col-span-1 md:col-span-3">
-                    <div className="grid grid-rows-2 gap-3 md:gap-1 h-full">
-                      {[rowImages[2], rowImages[3]].map(
-                        (img, i) =>
-                          img && (
-                            <div key={i}>
-                              {renderImageCard(img, rowIndex * 5 + i + 2)}
-                            </div>
-                          ),
-                      )}
-                    </div>
-                  </div>
-                  <div className="col-span-2 md:col-span-6">
-                    {rowImages[4] &&
-                      renderImageCard(rowImages[4], rowIndex * 5 + 4)}
-                  </div>
-                </>
-              )}
-            </div>
-          );
-        })}
+      {/* Justified rows keep every image uncropped without masonry bottom gaps. */}
+      <div className="flex flex-col gap-3 lg:gap-1">
+        {visibleRows.map((row, rowIndex) => (
+          <div
+            key={`${itemsPerRow}-${rowIndex}`}
+            className="flex w-full items-start gap-3 lg:gap-1"
+          >
+            {row.map((item) => (
+              <div
+                key={item.originalIndex}
+                style={{
+                  flexBasis: 0,
+                  flexGrow: item.width / item.height,
+                }}
+                className="min-w-0"
+              >
+                {renderImageCard(item, item.originalIndex)}
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
 
       {/* Bottom Batch Load Control */}

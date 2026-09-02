@@ -1,7 +1,10 @@
 "use client";
 
 import Image, { ImageProps } from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import imagePlaceholders from "data/image-placeholders.json";
+
+const placeholderMap = imagePlaceholders as Record<string, string>;
 
 type LazyImageProps = ImageProps & {
   /** Set false to skip the loading skeleton (e.g. above-the-fold priority images). */
@@ -16,44 +19,44 @@ export default function LazyImage({
   priority = false,
   loading,
   showSkeleton = true,
+  placeholder,
+  blurDataURL,
   ...rest
 }: LazyImageProps) {
-  const [isLoaded, setIsLoaded] = useState(!showSkeleton);
-
-  // Reset the skeleton whenever the image source changes (e.g. lightbox navigation).
-  useEffect(() => {
-    setIsLoaded(!showSkeleton);
-  }, [src, showSkeleton]);
+  const srcKey =
+    typeof src === "string"
+      ? src
+      : "default" in src
+        ? src.default.src
+        : src.src;
+  const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
+  const isLoaded = !showSkeleton || loadedSrc === srcKey;
+  const generatedBlurDataURL =
+    typeof src === "string" ? placeholderMap[src] : undefined;
+  const resolvedBlurDataURL = blurDataURL ?? generatedBlurDataURL;
 
   return (
-    <>
-      {showSkeleton && (
-        <span
-          aria-hidden="true"
-          className={`image-skeleton absolute inset-0 transition-opacity duration-500 ease-out ${
-            isLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
-          }`}
-        />
-      )}
-      <Image
-        alt={alt}
-        src={src}
-        {...rest}
-        priority={priority}
-        loading={priority ? undefined : (loading ?? "lazy")}
-        draggable={false}
-        onContextMenu={(e) => e.preventDefault()}
-        onDragStart={(e) => e.preventDefault()}
-        className={`${className || ""} photo-enhanced photo-protected ${
-          showSkeleton
-            ? `transition-opacity duration-500 ease-out ${isLoaded ? "opacity-100" : "opacity-0"}`
-            : ""
-        }`}
-        onLoad={(e) => {
-          setIsLoaded(true);
-          onLoad?.(e);
-        }}
-      />
-    </>
+    <Image
+      alt={alt}
+      src={src}
+      {...rest}
+      priority={priority}
+      loading={priority ? undefined : (loading ?? "lazy")}
+      placeholder={
+        placeholder ??
+        (showSkeleton && resolvedBlurDataURL ? "blur" : "empty")
+      }
+      blurDataURL={resolvedBlurDataURL}
+      draggable={false}
+      onContextMenu={(e) => e.preventDefault()}
+      onDragStart={(e) => e.preventDefault()}
+      className={`${className || ""} photo-enhanced photo-protected ${
+        isLoaded ? "photo-loaded" : "photo-loading"
+      }`}
+      onLoad={(event) => {
+        setLoadedSrc(srcKey);
+        onLoad?.(event);
+      }}
+    />
   );
 }

@@ -84,7 +84,6 @@ export default function Hero() {
             fill
             priority
             quality={95}
-            showSkeleton={false}
             className="object-cover"
           />
         </div>
