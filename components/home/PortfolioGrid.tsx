@@ -8,46 +8,39 @@ import {
   X,
   ZoomIn,
   ZoomOut,
-  Download,
+  Heart,
+  Share2,
+  Link as LinkIcon,
+  Mail,
+  Check,
 } from "lucide-react";
+import {
+  FaFacebookF,
+  FaLinkedinIn,
+  FaWhatsapp,
+  FaXTwitter,
+} from "react-icons/fa6";
 import imagesData from "data/portfolio.json";
-import gsap from "gsap";
 import Image from "next/image";
 
-// Category definitions
-const CATEGORIES = [
-  "ALL",
-  "WEDDINGS",
-  "PORTRAITS",
-  "COUPLES",
-  "EVENTS",
-] as const;
-type Category = (typeof CATEGORIES)[number];
-
-// JSON Data structure interface
 interface PortfolioItem {
   src: string;
-  category: Category;
+  width: number;
+  height: number;
 }
 
 export default function PortfolioGrid() {
-  const [activeCategory, setActiveCategory] = useState<Category>("ALL");
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
+  const [wishlistItems, setWishlistItems] = useState<number[]>([]);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
 
-  // 1. Direct Category Mapping from updated JSON structure
-  const categorizedImages = useMemo(() => {
+  const filteredData = useMemo(() => {
     return (imagesData as PortfolioItem[]).map((item, index) => ({
-      src: item.src,
-      category: item.category,
+      ...item,
       originalIndex: index,
     }));
   }, []);
-
-  // Filtered dataset based on active tab
-  const filteredData = useMemo(() => {
-    if (activeCategory === "ALL") return categorizedImages;
-    return categorizedImages.filter((item) => item.category === activeCategory);
-  }, [activeCategory, categorizedImages]);
 
   // 2. Fixed constants & batch state logic
   const BATCH_SIZE = 3;
@@ -55,15 +48,18 @@ export default function PortfolioGrid() {
   const [targetBatchLimit, setTargetBatchLimit] = useState<number>(3);
   const [isPaused, setIsPaused] = useState<boolean>(false);
 
-  // Reset batching state whenever category changes
   useEffect(() => {
-    setVisibleRowsCount(3);
-    setTargetBatchLimit(3);
-    setIsPaused(false);
-  }, [activeCategory]);
+    try {
+      const savedItems = window.localStorage.getItem("portfolio-wishlist");
+      if (savedItems) setWishlistItems(JSON.parse(savedItems));
+    } catch {
+      // Ignore unavailable or invalid local storage data.
+    }
+  }, []);
 
   // Lightbox Zoom & Pan (Drag) State
   const [zoomLevel, setZoomLevel] = useState<number>(1);
+  const [activeImageAspect, setActiveImageAspect] = useState(4 / 3);
   const [panPosition, setPanPosition] = useState<{ x: number; y: number }>({
     x: 0,
     y: 0,
@@ -74,12 +70,9 @@ export default function PortfolioGrid() {
     y: 0,
   });
 
-  // Custom Cursor & Refs
-  const gridSectionRef = useRef<HTMLElement | null>(null);
-  const gridRowsContainerRef = useRef<HTMLDivElement | null>(null);
-  const cursorRef = useRef<HTMLDivElement | null>(null);
+  // Element refs
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
-  const thumbnailContainerRef = useRef<HTMLDivElement | null>(null);
+  const openShareOnNextImageRef = useRef(false);
 
   // Split filtered images into rows of 5
   const allRows = useMemo(() => {
@@ -96,18 +89,24 @@ export default function PortfolioGrid() {
 
   const visibleRows = allRows.slice(0, visibleRowsCount);
   const hasMore = visibleRowsCount < allRows.length;
+  const [loadedGridImageIndexes, setLoadedGridImageIndexes] = useState<
+    Set<number>
+  >(() => new Set());
 
-  // GSAP Animation when active category changes
-  const handleCategoryChange = (cat: Category) => {
-    if (cat === activeCategory) return;
-    if (gridRowsContainerRef.current) {
-      gsap.fromTo(
-        gridRowsContainerRef.current,
-        { opacity: 0.3, y: 15 },
-        { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" },
-      );
-    }
-    setActiveCategory(cat);
+  const isGridRowReady = (gridIndex: number) => {
+    const rowStart = Math.floor(gridIndex / 5) * 5;
+    return filteredData
+      .slice(rowStart, rowStart + 5)
+      .every((item) => loadedGridImageIndexes.has(item.originalIndex));
+  };
+
+  const markGridImageReady = (imageIndex: number) => {
+    setLoadedGridImageIndexes((loadedIndexes) => {
+      if (loadedIndexes.has(imageIndex)) return loadedIndexes;
+      const nextIndexes = new Set(loadedIndexes);
+      nextIndexes.add(imageIndex);
+      return nextIndexes;
+    });
   };
 
   // Helper utility to convert image extensions to WebP
@@ -122,59 +121,55 @@ export default function PortfolioGrid() {
     setPanPosition({ x: 0, y: 0 });
   };
 
-  // 3. Custom Magnetic Hover Cursor Logic
-  useEffect(() => {
-    if (!gridSectionRef.current || !cursorRef.current) return;
+  const toggleWishlist = (itemIndex: number) => {
+    setWishlistItems((currentItems) => {
+      const nextItems = currentItems.includes(itemIndex)
+        ? currentItems.filter((index) => index !== itemIndex)
+        : [...currentItems, itemIndex];
 
-    const ctx = gsap.context(() => {
-      const moveCursor = (e: MouseEvent) => {
-        gsap.to(cursorRef.current, {
-          x: e.clientX,
-          y: e.clientY,
-          duration: 0.4,
-          ease: "power3.out",
-          overwrite: "auto",
-        });
-      };
-
-      const sectionEl = gridSectionRef.current;
-      if (sectionEl) {
-        sectionEl.addEventListener("mousemove", moveCursor);
+      try {
+        window.localStorage.setItem(
+          "portfolio-wishlist",
+          JSON.stringify(nextItems),
+        );
+      } catch {
+        // Wishlist still works for this session if storage is unavailable.
       }
 
-      return () => {
-        if (sectionEl) {
-          sectionEl.removeEventListener("mousemove", moveCursor);
-        }
-      };
-    }, gridSectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  const handleMouseEnterCard = () => {
-    if (cursorRef.current) {
-      gsap.to(cursorRef.current, {
-        scale: 1,
-        opacity: 1,
-        duration: 0.35,
-        ease: "power3.out",
-      });
-    }
+      return nextItems;
+    });
   };
 
-  const handleMouseLeaveCard = () => {
-    if (cursorRef.current) {
-      gsap.to(cursorRef.current, {
-        scale: 0,
-        opacity: 0,
-        duration: 0.25,
-        ease: "power2.in",
-      });
-    }
+  const getShareUrl = () => {
+    const url = new URL(window.location.href);
+    url.hash = "portfolio";
+    return url.toString();
   };
 
-  // 4. Observer setup for Hybrid Infinite Scroll
+  const openShareWindow = (url: string) => {
+    window.open(url, "_blank", "noopener,noreferrer,width=720,height=620");
+  };
+
+  const copyShareLink = async () => {
+    await navigator.clipboard.writeText(getShareUrl());
+    setIsLinkCopied(true);
+    window.setTimeout(() => setIsLinkCopied(false), 2000);
+  };
+
+  const shareWithDevice = async () => {
+    if (navigator.share) {
+      await navigator.share({
+        title: "Something Blue Wedding Photography",
+        text: "View this wedding photograph from Something Blue.",
+        url: getShareUrl(),
+      });
+      return;
+    }
+
+    await copyShareLink();
+  };
+
+  // 3. Observer setup for Hybrid Infinite Scroll
   useEffect(() => {
     if (isPaused || !hasMore) return;
 
@@ -264,19 +259,15 @@ export default function PortfolioGrid() {
     };
   }, [activeIdx]);
 
-  // Scroll active thumbnail into center view
   useEffect(() => {
-    if (activeIdx !== null && thumbnailContainerRef.current) {
-      const activeThumb = thumbnailContainerRef.current.children[
-        activeIdx
-      ] as HTMLElement;
-      if (activeThumb) {
-        activeThumb.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-          inline: "center",
-        });
-      }
+    setIsLinkCopied(false);
+    setActiveImageAspect(4 / 3);
+
+    if (openShareOnNextImageRef.current && activeIdx !== null) {
+      openShareOnNextImageRef.current = false;
+      setIsShareModalOpen(true);
+    } else {
+      setIsShareModalOpen(false);
     }
   }, [activeIdx]);
 
@@ -296,16 +287,6 @@ export default function PortfolioGrid() {
       prev !== null ? (prev + 1) % filteredData.length : null,
     );
     resetZoomAndPan();
-  };
-
-  const handleImageDownload = (e: React.MouseEvent, imageSrc: string) => {
-    e.stopPropagation();
-    const link = document.createElement("a");
-    link.href = toWebP(imageSrc);
-    link.download = `portfolio-image-${(activeIdx ?? 0) + 1}.webp`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   // --- PAN & DRAG HANDLERS ---
@@ -362,25 +343,65 @@ export default function PortfolioGrid() {
           setActiveIdx(gridIndex);
           resetZoomAndPan();
         }}
-        onMouseEnter={handleMouseEnterCard}
-        onMouseLeave={handleMouseLeaveCard}
-        className="relative overflow-hidden group cursor-none w-full h-full min-h-[220px]"
+        className="image-skeleton relative z-0 overflow-hidden group cursor-pointer w-full h-full min-h-[220px] transition-transform duration-300 ease-out hover:z-10 hover:scale-[0.97]"
       >
         <LazyImage
           src={item.src}
           alt={`Portfolio image ${gridIndex + 1}`}
-          width={2000}
-          height={1500}
-          quality={100}
-          className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-108 w-full h-full"
+          width={item.width}
+          height={item.height}
+          sizes="(max-width: 767px) 100vw, 50vw"
+          quality={92}
+          onLoad={() => markGridImageReady(item.originalIndex)}
+          onError={() => markGridImageReady(item.originalIndex)}
+          className={`object-cover transition-transform duration-700 ease-in-out group-hover:scale-[1.12] w-full h-full ${
+            isGridRowReady(gridIndex) ? "opacity-100" : "opacity-0"
+          }`}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex justify-between items-end p-4 pointer-events-none">
-          <span className="text-white/90 text-[11px] uppercase tracking-[0.2em] font-light">
-            Story #{item.originalIndex + 1}
-          </span>
-          <span className="text-[#BF9F72] text-[10px] uppercase tracking-[0.15em] font-medium border border-[#BF9F72]/40 px-2 py-0.5 rounded-sm bg-black/40 backdrop-blur-sm">
-            {item.category}
-          </span>
+
+        <div className="pointer-events-none absolute inset-0 flex items-end justify-between p-3 opacity-0 transition-opacity duration-300 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 sm:p-4">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleWishlist(item.originalIndex);
+            }}
+            className={`flex h-9 w-9 flex-none items-center justify-center drop-shadow-[0_2px_5px_rgba(0,0,0,0.9)] transition-colors sm:h-10 sm:w-10 ${
+              wishlistItems.includes(item.originalIndex)
+                ? "text-[#BF9F72]"
+                : "text-white hover:text-[#BF9F72]"
+            }`}
+            aria-label={
+              wishlistItems.includes(item.originalIndex)
+                ? "Remove image from wishlist"
+                : "Add image to wishlist"
+            }
+            title="Wishlist"
+          >
+            <Heart
+              size={17}
+              fill={
+                wishlistItems.includes(item.originalIndex)
+                  ? "currentColor"
+                  : "none"
+              }
+            />
+          </button>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              openShareOnNextImageRef.current = true;
+              setActiveIdx(gridIndex);
+              resetZoomAndPan();
+            }}
+            className="flex h-9 w-9 flex-none items-center justify-center text-white drop-shadow-[0_2px_5px_rgba(0,0,0,0.9)] transition-colors hover:text-[#BF9F72] sm:h-10 sm:w-10"
+            aria-label={`Share portfolio image ${gridIndex + 1}`}
+            title="Share"
+          >
+            <Share2 size={17} />
+          </button>
         </div>
       </div>
     );
@@ -388,40 +409,12 @@ export default function PortfolioGrid() {
 
   return (
     <section
-      ref={gridSectionRef}
       id="portfolio"
+      onContextMenu={(e) => e.preventDefault()}
       className="bg-[#0b0c10] py-8 border-y border-black select-none overflow-hidden relative"
     >
-      {/* MAGNETIC "VIEW" HOVER CURSOR */}
-      <div
-        ref={cursorRef}
-        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50 scale-0 opacity-0 flex items-center justify-center w-20 h-20 rounded-full bg-[#BF9F72]/90 text-[#0b0c10] text-[11px] font-bold tracking-[0.2em] uppercase backdrop-blur-md shadow-[0_10px_30px_rgba(191,159,114,0.3)] border border-white/20 will-change-transform"
-      >
-        VIEW
-      </div>
-
-      {/* FILTER / CATEGORY TABS BAR */}
-      <div className="max-w-6xl mx-auto px-4 mb-8 flex flex-wrap justify-center items-center gap-3 sm:gap-6 z-20 relative">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => handleCategoryChange(cat)}
-            className={`px-5 py-2 text-[11px] sm:text-[12px] font-medium tracking-[0.25em] uppercase transition-all duration-300 relative cursor-pointer ${
-              activeCategory === cat
-                ? "text-[#BF9F72]"
-                : "text-white/60 hover:text-white"
-            }`}
-          >
-            {cat}
-            {activeCategory === cat && (
-              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#BF9F72] animate-fadeIn" />
-            )}
-          </button>
-        ))}
-      </div>
-
       {/* GRID ROWS CONTAINER */}
-      <div ref={gridRowsContainerRef} className="flex flex-col gap-3 md:gap-1">
+      <div className="flex flex-col gap-3 md:gap-1">
         {visibleRows.map((rowImages, rowIndex) => {
           const isEvenRow = rowIndex % 2 === 0;
 
@@ -520,15 +513,54 @@ export default function PortfolioGrid() {
             setActiveIdx(null);
             resetZoomAndPan();
           }}
-          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex flex-col items-center justify-between py-6 px-4 transition-opacity duration-300 animate-fadeIn"
+          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex flex-col items-center justify-start py-6 px-4 transition-opacity duration-300 animate-fadeIn"
         >
           {/* Top Control Bar */}
           <div
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-6xl flex justify-between items-center z-[120] px-4"
           >
-            <div className="text-white/70 text-[12px] tracking-[0.2em] font-serif uppercase">
-              {activeIdx + 1} / {filteredData.length}
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() =>
+                  toggleWishlist(filteredData[activeIdx].originalIndex)
+                }
+                className={`rounded-full bg-white/5 p-2.5 transition-colors hover:bg-white/10 ${
+                  wishlistItems.includes(filteredData[activeIdx].originalIndex)
+                    ? "text-[#BF9F72]"
+                    : "text-white/80 hover:text-white"
+                }`}
+                aria-label={
+                  wishlistItems.includes(filteredData[activeIdx].originalIndex)
+                    ? "Remove image from wishlist"
+                    : "Add image to wishlist"
+                }
+                title="Wishlist"
+              >
+                <Heart
+                  size={18}
+                  fill={
+                    wishlistItems.includes(
+                      filteredData[activeIdx].originalIndex,
+                    )
+                      ? "currentColor"
+                      : "none"
+                  }
+                />
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsShareModalOpen(true)}
+                className="rounded-full bg-white/5 p-2.5 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                aria-label="Share image"
+                title="Share"
+              >
+                <Share2 size={18} />
+              </button>
+              <div className="hidden font-serif text-[12px] uppercase tracking-[0.2em] text-white/70 sm:block">
+                {activeIdx + 1} / {filteredData.length}
+              </div>
             </div>
 
             <div className="flex items-center gap-3">
@@ -557,15 +589,6 @@ export default function PortfolioGrid() {
                 title="Zoom Out"
               >
                 <ZoomOut size={18} />
-              </button>
-              <button
-                onClick={(e) =>
-                  handleImageDownload(e, filteredData[activeIdx].src)
-                }
-                className="text-white/80 hover:text-[#BF9F72] p-2.5 bg-white/5 hover:bg-white/10 rounded-full transition-colors"
-                title="Download High Res Image"
-              >
-                <Download size={18} />
               </button>
               <button
                 onClick={() => {
@@ -599,7 +622,11 @@ export default function PortfolioGrid() {
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleMouseUp}
-            className={`relative my-auto max-w-[90vw] max-h-[70vh] sm:max-h-[75vh] flex items-center justify-center overflow-hidden select-none ${
+            style={{
+              width: `min(94vw, ${84 * activeImageAspect}vh)`,
+              height: `min(84vh, ${94 / activeImageAspect}vw)`,
+            }}
+            className={`relative my-auto flex flex-none items-center justify-center overflow-hidden select-none shadow-2xl ${
               zoomLevel > 1
                 ? isDragging
                   ? "cursor-grabbing"
@@ -610,19 +637,30 @@ export default function PortfolioGrid() {
             <Image
               src={toWebP(filteredData[activeIdx].src)}
               alt={`Selected portfolio image ${activeIdx + 1}`}
-              width={2000}
-              height={1500}
+              fill
+              sizes="90vw"
+              quality={95}
+              draggable={false}
+              onContextMenu={(e) => e.preventDefault()}
+              onDragStart={(e) => e.preventDefault()}
+              onLoad={(e) => {
+                const { naturalWidth, naturalHeight } = e.currentTarget;
+                if (naturalWidth && naturalHeight) {
+                  setActiveImageAspect(naturalWidth / naturalHeight);
+                }
+              }}
               style={{
                 transform: `scale(${zoomLevel}) translate(${
                   panPosition.x / zoomLevel
                 }px, ${panPosition.y / zoomLevel}px)`,
               }}
-              className={`max-w-full max-h-[70vh] sm:max-h-[75vh] object-contain shadow-2xl ${
+              className={`photo-protected object-contain ${
                 isDragging
                   ? "transition-none"
                   : "transition-transform duration-200 ease-out"
               }`}
             />
+
           </div>
 
           {/* Right Navigation Arrow */}
@@ -634,39 +672,139 @@ export default function PortfolioGrid() {
             <ChevronRight size={28} />
           </button>
 
-          {/* Bottom Interactive Thumbnail Strip */}
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-4xl z-[120] overflow-hidden py-2 px-4"
-          >
+          {isShareModalOpen && (
             <div
-              ref={thumbnailContainerRef}
-              className="flex gap-2 overflow-x-auto no-scrollbar scroll-smooth justify-start sm:justify-center items-center py-1"
+              className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsShareModalOpen(false);
+              }}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="share-modal-title"
             >
-              {filteredData.map((item, idx) => (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="relative w-full max-w-md rounded-2xl border border-white/15 bg-[#15161a] p-6 text-white shadow-2xl sm:p-8"
+              >
                 <button
-                  key={idx}
-                  onClick={() => {
-                    setActiveIdx(idx);
-                    resetZoomAndPan();
-                  }}
-                  className={`relative flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-md overflow-hidden border-2 transition-all duration-300 ${
-                    activeIdx === idx
-                      ? "border-[#BF9F72] scale-105 opacity-100"
-                      : "border-transparent opacity-40 hover:opacity-80"
-                  }`}
+                  type="button"
+                  onClick={() => setIsShareModalOpen(false)}
+                  className="absolute right-4 top-4 rounded-full p-2 text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+                  aria-label="Close share options"
                 >
-                  <Image
-                    src={toWebP(item.src)}
-                    alt={`Thumbnail ${idx + 1}`}
-                    width={100}
-                    height={100}
-                    className="w-full h-full object-cover"
-                  />
+                  <X size={19} />
                 </button>
-              ))}
+
+                <h2
+                  id="share-modal-title"
+                  className="pr-10 font-serif text-2xl font-normal tracking-wide"
+                >
+                  Share this moment
+                </h2>
+                <p className="mt-2 text-sm text-white/55">
+                  Choose where you would like to share this portfolio.
+                </p>
+
+                <div className="mt-7 grid grid-cols-4 gap-4">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openShareWindow(
+                        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getShareUrl())}`,
+                      )
+                    }
+                    className="group flex flex-col items-center gap-2 text-xs text-white/65 hover:text-white"
+                  >
+                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1877F2] text-white transition-transform group-hover:scale-105">
+                      <FaFacebookF size={19} />
+                    </span>
+                    Facebook
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openShareWindow(
+                        `https://wa.me/?text=${encodeURIComponent(`Something Blue Wedding Photography ${getShareUrl()}`)}`,
+                      )
+                    }
+                    className="group flex flex-col items-center gap-2 text-xs text-white/65 hover:text-white"
+                  >
+                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white transition-transform group-hover:scale-105">
+                      <FaWhatsapp size={21} />
+                    </span>
+                    WhatsApp
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openShareWindow(
+                        `https://twitter.com/intent/tweet?text=${encodeURIComponent("Something Blue Wedding Photography")}&url=${encodeURIComponent(getShareUrl())}`,
+                      )
+                    }
+                    className="group flex flex-col items-center gap-2 text-xs text-white/65 hover:text-white"
+                  >
+                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-black text-white ring-1 ring-white/20 transition-transform group-hover:scale-105">
+                      <FaXTwitter size={19} />
+                    </span>
+                    X
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openShareWindow(
+                        `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getShareUrl())}`,
+                      )
+                    }
+                    className="group flex flex-col items-center gap-2 text-xs text-white/65 hover:text-white"
+                  >
+                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0A66C2] text-white transition-transform group-hover:scale-105">
+                      <FaLinkedinIn size={20} />
+                    </span>
+                    LinkedIn
+                  </button>
+
+                  <a
+                    href={`mailto:?subject=${encodeURIComponent("Something Blue Wedding Photography")}&body=${encodeURIComponent(`View this wedding portfolio: ${getShareUrl()}`)}`}
+                    className="group flex flex-col items-center gap-2 text-xs text-white/65 hover:text-white"
+                  >
+                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#BF9F72] text-[#0b0c10] transition-transform group-hover:scale-105">
+                      <Mail size={20} />
+                    </span>
+                    Email
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={shareWithDevice}
+                    className="group flex flex-col items-center gap-2 text-xs text-white/65 hover:text-white"
+                  >
+                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-transform group-hover:scale-105">
+                      <Share2 size={20} />
+                    </span>
+                    More
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={copyShareLink}
+                    className="group col-span-2 flex items-center justify-center gap-3 rounded-full border border-white/15 bg-white/5 px-4 text-sm text-white/75 transition-colors hover:border-[#BF9F72]/60 hover:text-white"
+                  >
+                    {isLinkCopied ? (
+                      <Check size={18} className="text-[#BF9F72]" />
+                    ) : (
+                      <LinkIcon size={18} />
+                    )}
+                    {isLinkCopied ? "Link copied" : "Copy link"}
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+
         </div>
       )}
 
@@ -680,13 +818,6 @@ export default function PortfolioGrid() {
           }
           .animate-fadeIn {
             animation: fadeIn 0.25s ease-out forwards;
-          }
-          .no-scrollbar::-webkit-scrollbar {
-            display: none;
-          }
-          .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
           }
         `,
         }}

@@ -1,11 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import Image, { ImageProps } from "next/image";
 
-export default function LazyImage({ className, onLoad, alt, src, ...rest }: ImageProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
-
+export default function LazyImage({
+  className,
+  onLoad,
+  alt,
+  src,
+  priority = false,
+  loading,
+  ...rest
+}: ImageProps) {
   const webpSrc = typeof src === "string" && src.startsWith("/images/portfolio/")
     ? src.replace(/\.(svg|png|jpg|jpeg)$/i, ".webp")
     : src;
@@ -15,18 +20,13 @@ export default function LazyImage({ className, onLoad, alt, src, ...rest }: Imag
       alt={alt}
       src={webpSrc}
       {...rest}
-      priority={true}
-      className={`${className || ""} photo-enhanced transition-opacity duration-300 ease-out ${
-        isLoaded 
-          ? "opacity-100" 
-          : "opacity-0"
-      }`}
-      onLoad={(e) => {
-        setIsLoaded(true);
-        if (onLoad) {
-          onLoad(e);
-        }
-      }}
+      priority={priority}
+      loading={priority ? undefined : (loading ?? "lazy")}
+      draggable={false}
+      onContextMenu={(e) => e.preventDefault()}
+      onDragStart={(e) => e.preventDefault()}
+      className={`${className || ""} image-skeleton photo-enhanced photo-protected`}
+      onLoad={onLoad}
     />
   );
 }

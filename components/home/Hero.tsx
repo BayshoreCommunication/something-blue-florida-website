@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
@@ -9,15 +9,12 @@ export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
   const parallaxBoxRef = useRef<HTMLDivElement>(null);
   const flashRef = useRef<HTMLDivElement>(null);
-  const cursorRef = useRef<HTMLDivElement>(null);
-
-  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     if (!heroRef.current) return;
 
     const ctx = gsap.context(() => {
-      // 1. Mouse Movement: Watermark Parallax + Camera Icon Cursor
+      // 1. Mouse Movement: Watermark Parallax
       const handleMouseMove = (e: MouseEvent) => {
         const { clientX, clientY } = e;
         const { innerWidth, innerHeight } = window;
@@ -36,15 +33,6 @@ export default function Hero() {
           });
         }
 
-        // Custom Camera Icon Cursor Motion
-        if (cursorRef.current) {
-          gsap.to(cursorRef.current, {
-            x: clientX,
-            y: clientY,
-            duration: 0.1,
-            ease: "power2.out",
-          });
-        }
       };
 
       // 2. Camera Flash Light Effect on Click
@@ -80,55 +68,13 @@ export default function Hero() {
     <section
       ref={heroRef}
       id="home"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={`relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-[#0b0c10] ${
-        isHovered ? "cursor-none" : ""
-      }`}
+      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-[#0b0c10]"
     >
       {/* CAMERA FLASH LIGHT OVERLAY */}
       <div
         ref={flashRef}
         className="absolute inset-0 bg-white opacity-0 pointer-events-none z-50"
       />
-
-      {/* REAL CAMERA VECTOR ICON CURSOR */}
-      {isHovered && (
-        <div
-          ref={cursorRef}
-          className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50 flex items-center justify-center select-none"
-        >
-          {/* Camera Frame Container */}
-          <div className="relative p-3 rounded-full bg-black/40 border border-[#BF9F72]/50 backdrop-blur-sm shadow-xl flex items-center justify-center">
-            {/* Real Camera SVG Icon */}
-            <svg
-              width="26"
-              height="26"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#BF9F72"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="drop-shadow-md"
-            >
-              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-              <circle cx="12" cy="13" r="3" />
-              {/* Flash/Focus Indicator Dot */}
-              <circle
-                cx="18"
-                cy="10"
-                r="0.5"
-                fill="#BF9F72"
-                className="animate-ping"
-              />
-            </svg>
-
-            {/* Small Focus Pulse Ring */}
-            <span className="absolute inset-0 rounded-full border border-[#BF9F72]/30 animate-ping pointer-events-none" />
-          </div>
-        </div>
-      )}
 
       {/* Background Image with smooth looping zoom and pan animation */}
       <div className="absolute inset-0 w-full h-full select-none z-0 overflow-hidden">

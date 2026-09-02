@@ -363,12 +363,34 @@ a.inline-flex,
    Photo Enhancement
 ================================= */
 
+@keyframes skeleton-loading {
+  0%,
+  100% {
+    background-color: #d8d4ce;
+  }
+  50% {
+    background-color: #ece9e4;
+  }
+}
+
+.image-skeleton {
+  background-color: #d8d4ce;
+  animation: skeleton-loading 1.4s ease-in-out infinite;
+}
+
 .photo-enhanced {
   filter: url(#crisp-sharpen) contrast(1.05) saturate(1.03) brightness(1.01);
-  transition: filter 500ms ease, transform 700ms ease, opacity 300ms ease-out !important;
+  transition: filter 500ms ease, transform 700ms ease !important;
 }
 
 .group:hover .photo-enhanced,
 .photo-enhanced:hover {
   filter: url(#crisp-sharpen) contrast(1.08) saturate(1.05) brightness(1.02);
+}
+
+/* Discourage dragging and long-press saving of portfolio photography. */
+.photo-protected {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
 }

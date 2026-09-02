@@ -1,49 +1,372 @@
 [
-  { "src": "/images/portfolio/01.jpg", "category": "WEDDINGS" },
-  { "src": "/images/portfolio/02.jpg", "category": "WEDDINGS" },
-  { "src": "/images/portfolio/03.jpg", "category": "WEDDINGS" },
-  { "src": "/images/portfolio/04.jpg", "category": "WEDDINGS" },
-  { "src": "/images/portfolio/05.jpg", "category": "WEDDINGS" },
-
-  { "src": "/images/portfolio/6.jpg", "category": "PORTRAITS" },
-  { "src": "/images/portfolio/7.jpg", "category": "PORTRAITS" },
-  { "src": "/images/portfolio/8.jpg", "category": "PORTRAITS" },
-  { "src": "/images/portfolio/9.jpg", "category": "PORTRAITS" },
-  { "src": "/images/portfolio/10.jpg", "category": "PORTRAITS" },
-
-  { "src": "/images/portfolio/11.jpg", "category": "COUPLES" },
-  { "src": "/images/portfolio/12.jpg", "category": "COUPLES" },
-  { "src": "/images/portfolio/13.jpg", "category": "COUPLES" },
-  { "src": "/images/portfolio/14.jpg", "category": "COUPLES" },
-  { "src": "/images/portfolio/17.jpg", "category": "COUPLES" },
-
-  { "src": "/images/portfolio/16.jpg", "category": "EVENTS" },
-  { "src": "/images/portfolio/17.jpg", "category": "EVENTS" },
-  { "src": "/images/portfolio/18.jpg", "category": "EVENTS" },
-  { "src": "/images/portfolio/19.jpg", "category": "EVENTS" },
-  { "src": "/images/portfolio/20.jpg", "category": "EVENTS" },
-
-  { "src": "/images/portfolio/01.jpg", "category": "WEDDINGS" },
-  { "src": "/images/portfolio/02.jpg", "category": "WEDDINGS" },
-  { "src": "/images/portfolio/03.jpg", "category": "WEDDINGS" },
-  { "src": "/images/portfolio/04.jpg", "category": "WEDDINGS" },
-  { "src": "/images/portfolio/05.jpg", "category": "WEDDINGS" },
-
-  { "src": "/images/portfolio/6.jpg", "category": "PORTRAITS" },
-  { "src": "/images/portfolio/7.jpg", "category": "PORTRAITS" },
-  { "src": "/images/portfolio/8.jpg", "category": "PORTRAITS" },
-  { "src": "/images/portfolio/9.jpg", "category": "PORTRAITS" },
-  { "src": "/images/portfolio/10.jpg", "category": "PORTRAITS" },
-
-  { "src": "/images/portfolio/11.jpg", "category": "COUPLES" },
-  { "src": "/images/portfolio/12.jpg", "category": "COUPLES" },
-  { "src": "/images/portfolio/13.jpg", "category": "COUPLES" },
-  { "src": "/images/portfolio/14.jpg", "category": "COUPLES" },
-  { "src": "/images/portfolio/17.jpg", "category": "COUPLES" },
-
-  { "src": "/images/portfolio/16.jpg", "category": "EVENTS" },
-  { "src": "/images/portfolio/17.jpg", "category": "EVENTS" },
-  { "src": "/images/portfolio/18.jpg", "category": "EVENTS" },
-  { "src": "/images/portfolio/19.jpg", "category": "EVENTS" },
-  { "src": "/images/portfolio/20.jpg", "category": "EVENTS" }
+  {
+    "src": "/images/portfolio-optimized/portfolio-001.webp",
+    "width": 3200,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-002.webp",
+    "width": 4800,
+    "height": 3306
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-003.webp",
+    "width": 4800,
+    "height": 3327
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-004.webp",
+    "width": 4800,
+    "height": 3234
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-005.webp",
+    "width": 3200,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-006.webp",
+    "width": 4800,
+    "height": 2753
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-007.webp",
+    "width": 4800,
+    "height": 3139
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-008.webp",
+    "width": 3203,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-009.webp",
+    "width": 4800,
+    "height": 3426
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-010.webp",
+    "width": 4012,
+    "height": 3671
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-011.webp",
+    "width": 4800,
+    "height": 3203
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-012.webp",
+    "width": 4800,
+    "height": 3203
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-013.webp",
+    "width": 3203,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-014.webp",
+    "width": 3203,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-015.webp",
+    "width": 4800,
+    "height": 3203
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-016.webp",
+    "width": 4800,
+    "height": 3315
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-017.webp",
+    "width": 4085,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-018.webp",
+    "width": 3288,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-019.webp",
+    "width": 2822,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-020.webp",
+    "width": 2961,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-021.webp",
+    "width": 3362,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-022.webp",
+    "width": 3761,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-023.webp",
+    "width": 3200,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-024.webp",
+    "width": 3200,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-025.webp",
+    "width": 3305,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-026.webp",
+    "width": 4800,
+    "height": 3203
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-027.webp",
+    "width": 3203,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-028.webp",
+    "width": 4800,
+    "height": 3203
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-029.webp",
+    "width": 4800,
+    "height": 3203
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-030.webp",
+    "width": 4800,
+    "height": 2767
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-031.webp",
+    "width": 3081,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-032.webp",
+    "width": 4800,
+    "height": 3200
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-033.webp",
+    "width": 4800,
+    "height": 2897
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-034.webp",
+    "width": 4800,
+    "height": 3200
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-035.webp",
+    "width": 4800,
+    "height": 3200
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-036.webp",
+    "width": 4800,
+    "height": 3200
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-037.webp",
+    "width": 4800,
+    "height": 3208
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-038.webp",
+    "width": 3200,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-039.webp",
+    "width": 3715,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-040.webp",
+    "width": 3481,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-041.webp",
+    "width": 4800,
+    "height": 2977
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-042.webp",
+    "width": 3253,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-043.webp",
+    "width": 3203,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-044.webp",
+    "width": 3203,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-045.webp",
+    "width": 4800,
+    "height": 3356
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-046.webp",
+    "width": 4800,
+    "height": 3009
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-047.webp",
+    "width": 2752,
+    "height": 4128
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-048.webp",
+    "width": 3730,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-049.webp",
+    "width": 3200,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-050.webp",
+    "width": 3182,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-051.webp",
+    "width": 3078,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-052.webp",
+    "width": 4800,
+    "height": 3259
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-053.webp",
+    "width": 4800,
+    "height": 3330
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-054.webp",
+    "width": 3203,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-055.webp",
+    "width": 3453,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-056.webp",
+    "width": 3203,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-057.webp",
+    "width": 3584,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-058.webp",
+    "width": 4800,
+    "height": 3334
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-059.webp",
+    "width": 2131,
+    "height": 3698
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-060.webp",
+    "width": 3200,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-061.webp",
+    "width": 3200,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-062.webp",
+    "width": 4800,
+    "height": 3200
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-063.webp",
+    "width": 4800,
+    "height": 2978
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-064.webp",
+    "width": 4800,
+    "height": 3651
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-065.webp",
+    "width": 3345,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-066.webp",
+    "width": 3203,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-067.webp",
+    "width": 3122,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-068.webp",
+    "width": 3257,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-069.webp",
+    "width": 3143,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-070.webp",
+    "width": 3200,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-071.webp",
+    "width": 4800,
+    "height": 3299
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-072.webp",
+    "width": 3200,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-073.webp",
+    "width": 3200,
+    "height": 4800
+  },
+  {
+    "src": "/images/portfolio-optimized/portfolio-074.webp",
+    "width": 4800,
+    "height": 3200
+  }
 ]
