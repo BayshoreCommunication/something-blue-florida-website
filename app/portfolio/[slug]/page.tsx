@@ -1,8 +1,8 @@
 import LazyImage from "components/common/LazyImage";
-import Link from "next/link";
-import { notFound } from "next/navigation";
 import Container from "components/layout/Container";
 import storiesData from "data/stories.json";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
 type Story = {
   id: number;
@@ -23,21 +23,53 @@ export async function generateStaticParams() {
 // Generate distinct wedding details based on story ID
 function getWeddingDetails(id: number) {
   const details = [
-    { venue: "Bella Collina, Orlando", florals: "Fleurs de Lyon", style: "Classic Elegance" },
-    { venue: "Sunset Key Cottages, Key West", florals: "Isle Bloom", style: "Coastal Romantic" },
-    { venue: "Vizcaya Museum & Gardens, Miami", florals: "Royal Florals", style: "Opulent European" },
-    { venue: "Lush Garden Estate, Gainesville", florals: "Wildflower Co.", style: "Rustic Garden" },
-    { venue: "The Ringling Museum, Sarasota", florals: "Fine Petals", style: "Historic Mansion" },
-    { venue: "Henderson Park Inn, Destin", florals: "Sand & Seed", style: "Beachfront Sunset" },
-    { venue: "Keeler Property, Jacksonville", florals: "Ivy & Lace", style: "Rustic chic Vineyard" },
-    { venue: "The Vault, Downtown Tampa", florals: "Urban Foliage", style: "Urban Luxury Loft" },
+    {
+      venue: "Bella Collina, Orlando",
+      florals: "Fleurs de Lyon",
+      style: "Classic Elegance",
+    },
+    {
+      venue: "Sunset Key Cottages, Key West",
+      florals: "Isle Bloom",
+      style: "Coastal Romantic",
+    },
+    {
+      venue: "Vizcaya Museum & Gardens, Miami",
+      florals: "Royal Florals",
+      style: "Opulent European",
+    },
+    {
+      venue: "Lush Garden Estate, Gainesville",
+      florals: "Wildflower Co.",
+      style: "Rustic Garden",
+    },
+    {
+      venue: "The Ringling Museum, Sarasota",
+      florals: "Fine Petals",
+      style: "Historic Mansion",
+    },
+    {
+      venue: "Henderson Park Inn, Destin",
+      florals: "Sand & Seed",
+      style: "Beachfront Sunset",
+    },
+    {
+      venue: "Keeler Property, Jacksonville",
+      florals: "Ivy & Lace",
+      style: "Rustic chic Vineyard",
+    },
+    {
+      venue: "The Vault, Downtown Tampa",
+      florals: "Urban Foliage",
+      style: "Urban Luxury Loft",
+    },
   ];
   return details[(id - 1) % details.length];
 }
 
 // Select 4 unique showcase photos from the portfolio folder
 function getGalleryImages(id: number) {
-  const base = ((id - 1) * 2) % 15 + 1;
+  const base = (((id - 1) * 2) % 15) + 1;
   return [
     `/images/portfolio/${base}.jpg`,
     `/images/portfolio/${base + 1}.jpg`,
@@ -70,7 +102,7 @@ type Props = {
 
 export default function StoryDetailPage({ params }: Props) {
   const story = (storiesData as Story[]).find(
-    (s) => s.slug === `/portfolio/${params.slug}`
+    (s) => s.slug === `/portfolio/${params.slug}`,
   );
 
   if (!story) {
@@ -81,12 +113,11 @@ export default function StoryDetailPage({ params }: Props) {
   const galleryImages = getGalleryImages(story.id);
 
   return (
-    <main className="bg-[#FAF8F5] min-h-screen pb-20 select-none">
+    <main className="bg-[#FAF8F5] min-h-screen pb-20 select-none mt-28">
       {/* 2. THE STORY & DETAILS SECTION */}
       <section className="pt-32 pb-16 sm:py-24">
         <Container className="max-w-[1200px] px-4 sm:px-16 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            
             {/* Left Column: Image (Crisp, native aspect ratio) */}
             <div className="lg:col-span-6">
               <div className="relative w-full aspect-[3/4] overflow-hidden rounded-2xl shadow-md bg-gray-100 select-none">
@@ -112,14 +143,16 @@ export default function StoryDetailPage({ params }: Props) {
                 </h1>
                 <div className="h-0.5 w-16 bg-[#BF9F72] mb-6" />
                 <p className="text-gray-600 text-[15px] sm:text-[16px] leading-[1.8] tracking-wide font-serif mb-6 font-normal">
-                  {story.description} Every detail of this wedding was carefully chosen to reflect
-                  their journey together. From the morning preparations to the starlit dance floor,
-                  it was a day filled with laughter, tears, and unforgettable celebrations.
+                  {story.description} Every detail of this wedding was carefully
+                  chosen to reflect their journey together. From the morning
+                  preparations to the starlit dance floor, it was a day filled
+                  with laughter, tears, and unforgettable celebrations.
                 </p>
                 <p className="text-gray-600 text-[15px] sm:text-[16px] leading-[1.8] tracking-wide font-serif font-normal">
-                  Our approach was to capture the organic, fleeting emotions—the quiet glances,
-                  the shared laughs, and the grand festive highlights. We were honored to preserve these
-                  cherished moments that will be treasured for generations to come.
+                  Our approach was to capture the organic, fleeting emotions—the
+                  quiet glances, the shared laughs, and the grand festive
+                  highlights. We were honored to preserve these cherished
+                  moments that will be treasured for generations to come.
                 </p>
               </div>
 
@@ -128,7 +161,7 @@ export default function StoryDetailPage({ params }: Props) {
                 <h3 className="text-[18px] font-normal text-gray-900 tracking-wider font-serif mb-6 border-b border-gray-100 pb-4 uppercase">
                   The Details
                 </h3>
-                
+
                 <div className="flex flex-col gap-5">
                   <div className="flex justify-between items-baseline border-b border-gray-50 pb-3">
                     <span className="text-[11px] tracking-[0.15em] text-gray-400 uppercase font-semibold">
@@ -165,7 +198,6 @@ export default function StoryDetailPage({ params }: Props) {
                 </div>
               </div>
             </div>
-
           </div>
         </Container>
       </section>
@@ -194,7 +226,11 @@ export default function StoryDetailPage({ params }: Props) {
                   >
                     <LazyImage
                       src={imgSrc}
-                      alt={targetStory ? `Wedding of ${targetStory.coupleName}` : "Highlight moment"}
+                      alt={
+                        targetStory
+                          ? `Wedding of ${targetStory.coupleName}`
+                          : "Highlight moment"
+                      }
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
@@ -230,9 +266,10 @@ export default function StoryDetailPage({ params }: Props) {
             Inspired by their story?
           </h4>
           <p className="text-gray-500 text-sm mb-8 max-w-md mx-auto font-serif">
-            Let&rsquo;s connect to preserve your wedding story with timeless, genuine artistry.
+            Let&rsquo;s connect to preserve your wedding story with timeless,
+            genuine artistry.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
               href="/contact"

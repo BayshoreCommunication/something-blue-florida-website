@@ -320,6 +320,28 @@ export default function PortfolioGrid() {
     });
   };
 
+  const changeZoom = (amount: number) => {
+    setZoomLevel((currentZoom) => {
+      const nextZoom = Math.min(3, Math.max(1, currentZoom + amount));
+      if (nextZoom === 1) setPanPosition({ x: 0, y: 0 });
+      return nextZoom;
+    });
+  };
+
+  const handleImageWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    changeZoom(e.deltaY < 0 ? 0.25 : -0.25);
+  };
+
+  const handleImageDoubleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setZoomLevel((currentZoom) => {
+      const nextZoom = currentZoom === 1 ? 2 : 1;
+      if (nextZoom === 1) setPanPosition({ x: 0, y: 0 });
+      return nextZoom;
+    });
+  };
+
   // Helper render method for each image card
   const renderImageCard = (
     item: (typeof filteredData)[number],
@@ -445,20 +467,23 @@ export default function PortfolioGrid() {
             setActiveIdx(null);
             resetZoomAndPan();
           }}
-          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex flex-col items-center justify-start py-6 px-4 transition-opacity duration-300 animate-fadeIn"
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-black/95 px-2 pb-3 pt-20 backdrop-blur-md transition-opacity duration-300 animate-fadeIn sm:px-14 sm:pb-5 sm:pt-24"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Portfolio image viewer"
         >
-          {/* Top Control Bar */}
+          {/* Controls stay fixed in the viewport corners. */}
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-6xl flex justify-between items-center z-[120] px-4"
+            className="pointer-events-none absolute inset-x-0 top-0 z-[120] flex items-start justify-between p-3 sm:p-5"
           >
-            <div className="flex items-center gap-3">
+            <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-white/10 bg-black/40 p-1 backdrop-blur-md">
               <button
                 type="button"
                 onClick={() =>
                   toggleWishlist(filteredData[activeIdx].originalIndex)
                 }
-                className={`rounded-full bg-white/5 p-2.5 transition-colors hover:bg-white/10 ${
+                className={`rounded-full p-2.5 transition-colors hover:bg-white/10 ${
                   wishlistItems.includes(filteredData[activeIdx].originalIndex)
                     ? "text-[#BF9F72]"
                     : "text-white/80 hover:text-white"
@@ -484,53 +509,50 @@ export default function PortfolioGrid() {
               <button
                 type="button"
                 onClick={() => setIsShareModalOpen(true)}
-                className="rounded-full bg-white/5 p-2.5 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                className="rounded-full p-2.5 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
                 aria-label="Share image"
                 title="Share"
               >
                 <Share2 size={18} />
               </button>
-              <div className="hidden font-serif text-[12px] uppercase tracking-[0.2em] text-white/70 sm:block">
-                {activeIdx + 1} / {filteredData.length}
-              </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-white/10 bg-black/40 p-1 backdrop-blur-md">
               <button
-                onClick={() => {
-                  setZoomLevel((prev) => {
-                    const next = Math.min(prev + 0.5, 3);
-                    if (next === 1) setPanPosition({ x: 0, y: 0 });
-                    return next;
-                  });
-                }}
-                className="text-white/80 hover:text-white p-2.5 bg-white/5 hover:bg-white/10 rounded-full transition-colors"
+                type="button"
+                onClick={() => changeZoom(0.5)}
+                disabled={zoomLevel >= 3}
+                className="rounded-full p-2.5 text-white/80 transition-colors hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
                 title="Zoom In"
+                aria-label="Zoom in"
               >
                 <ZoomIn size={18} />
               </button>
               <button
-                onClick={() => {
-                  setZoomLevel((prev) => {
-                    const next = Math.max(prev - 0.5, 1);
-                    if (next === 1) setPanPosition({ x: 0, y: 0 });
-                    return next;
-                  });
-                }}
-                className="text-white/80 hover:text-white p-2.5 bg-white/5 hover:bg-white/10 rounded-full transition-colors"
+                type="button"
+                onClick={() => changeZoom(-0.5)}
+                disabled={zoomLevel <= 1}
+                className="rounded-full p-2.5 text-white/80 transition-colors hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
                 title="Zoom Out"
+                aria-label="Zoom out"
               >
                 <ZoomOut size={18} />
               </button>
+              <span className="hidden min-w-12 text-center text-[10px] font-medium tabular-nums tracking-wider text-white/65 sm:block">
+                {Math.round(zoomLevel * 100)}%
+              </span>
+              <span className="mx-1 h-5 w-px bg-white/15" aria-hidden="true" />
               <button
+                type="button"
                 onClick={() => {
                   setActiveIdx(null);
                   resetZoomAndPan();
                 }}
-                className="text-white/80 hover:text-white p-2.5 bg-white/5 hover:bg-white/10 rounded-full transition-colors ml-2"
+                className="rounded-full p-2.5 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
                 aria-label="Close lightbox"
+                title="Close"
               >
-                <X size={20} />
+                <X size={22} />
               </button>
             </div>
           </div>
@@ -551,14 +573,16 @@ export default function PortfolioGrid() {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
+            onDoubleClick={handleImageDoubleClick}
+            onWheel={handleImageWheel}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleMouseUp}
             style={{
-              width: `min(94vw, ${84 * activeImageAspect}vh)`,
-              height: `min(84vh, ${94 / activeImageAspect}vw)`,
+              width: `min(92vw, ${88 * activeImageAspect}vh)`,
+              height: `min(88vh, ${92 / activeImageAspect}vw)`,
             }}
-            className={`relative my-auto flex flex-none items-center justify-center overflow-hidden select-none shadow-2xl ${
+            className={`relative flex flex-none items-center justify-center overflow-hidden select-none shadow-2xl ${
               zoomLevel > 1
                 ? isDragging
                   ? "cursor-grabbing"
