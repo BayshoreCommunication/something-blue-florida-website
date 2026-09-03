@@ -10,8 +10,6 @@ import {
   Phone,
   Instagram,
   Facebook,
-  Compass,
-  Music2,
 } from "lucide-react";
 import Container from "./Container";
 
@@ -124,13 +122,13 @@ export default function Footer() {
                   hello@somethingblueflorida.com
                 </a>
                 <a
-                  href="tel:9415943548"
+                  href="tel:+15095921745"
                   className="flex items-center justify-center gap-3 text-sm text-[#0b0c10] hover:text-[#BF9F72] transition-colors duration-300 font-serif"
                 >
                   <span className="text-[#BF9F72]">
                     <Phone size={16} />
                   </span>
-                  Phone: 941.594.3548
+                  Phone: +1 (509) 592-1745
                 </a>
               </div>
             </div>
@@ -153,7 +151,7 @@ export default function Footer() {
               {/* Social Channels List */}
               <div className="flex flex-col gap-5 items-start w-fit mx-auto pl-2">
                 <a
-                  href="https://instagram.com"
+                  href="https://www.instagram.com/somethingblueflorida?igsi=a2JwdWUzN2RydzQ2"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 text-[11px] font-bold tracking-[0.25em] text-[#0b0c10] hover:text-[#BF9F72] transition-colors uppercase font-serif"
@@ -164,7 +162,7 @@ export default function Footer() {
                   Instagram
                 </a>
                 <a
-                  href="https://facebook.com"
+                  href="https://www.facebook.com/share/18JFJPfigj/?mibextid=wwXIfr"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 text-[11px] font-bold tracking-[0.25em] text-[#0b0c10] hover:text-[#BF9F72] transition-colors uppercase font-serif"
@@ -174,7 +172,7 @@ export default function Footer() {
                   </span>
                   Facebook
                 </a>
-                <a
+                {/* <a
                   href="https://pinterest.com"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -184,8 +182,8 @@ export default function Footer() {
                     <Compass size={17} />
                   </span>
                   Pinterest
-                </a>
-                <a
+                </a> */}
+                {/* <a
                   href="https://tiktok.com"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -195,7 +193,7 @@ export default function Footer() {
                     <Music2 size={17} />
                   </span>
                   Tiktok
-                </a>
+                </a> */}
               </div>
             </div>
           </div>

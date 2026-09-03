@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { ChevronDown, Menu, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const pathname = usePathname();
@@ -63,6 +64,33 @@ export default function Navbar() {
     { name: "PORTFOLIO", targetId: "portfolio", path: "/#portfolio" },
     { name: "REVIEWS", targetId: "reviews", path: "/#reviews" },
     { name: "CONTACT", targetId: "contact", path: "/#contact" },
+  ];
+
+  const portfolioLinks = [
+    {
+      name: "Wedding Portfolio",
+      url: "https://www.somethingblueflorida.com",
+    },
+    {
+      name: "Engagements",
+      url: "https://www.somethingblueflorida.com/engagement-couples",
+    },
+    {
+      name: "Beach Portraits",
+      url: "https://www.somethingblueflorida.com/beachportraitsami",
+    },
+    {
+      name: "Kids & Babies",
+      url: "https://www.somethingblueflorida.com/kids-babies",
+    },
+    {
+      name: "Portraits",
+      url: "https://www.somethingblueflorida.com/senior-portraits",
+    },
+    {
+      name: "Christmas",
+      url: "https://www.somethingblueflorida.com/about-3",
+    },
   ];
 
   const isHomeHero = pathname === "/" && !scrolled;
@@ -122,6 +150,45 @@ export default function Navbar() {
                   ? activeSection === link.targetId
                   : pathname === link.path;
 
+              if (link.targetId === "portfolio") {
+                return (
+                  <div key={link.name} className="group relative py-3">
+                    <Link
+                      href={link.path}
+                      onClick={(e) => handleNavClick(e, link.targetId)}
+                      className={`flex items-center gap-1.5 text-[13px] font-medium tracking-[0.2em] transition-colors duration-300 select-none ${
+                        isActive
+                          ? "text-[#BF9F72] font-semibold"
+                          : "text-white/80 hover:text-[#BF9F72]"
+                      }`}
+                      aria-haspopup="menu"
+                    >
+                      {link.name}
+                      <ChevronDown
+                        size={14}
+                        className="transition-transform duration-300 group-hover:rotate-180 group-focus-within:rotate-180"
+                      />
+                    </Link>
+
+                    <div className="invisible absolute left-1/2 top-full w-60 -translate-x-1/2 translate-y-2 border border-white/10 bg-[#0b0c10]/95 py-2 opacity-0 shadow-2xl backdrop-blur-xl transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                      {portfolioLinks.map((portfolioLink) => (
+                        <a
+                          key={portfolioLink.name}
+                          href={portfolioLink.url || undefined}
+                          onClick={(e) => {
+                            if (!portfolioLink.url) e.preventDefault();
+                          }}
+                          className="block px-5 py-3 text-[12px] font-medium tracking-[0.12em] text-white/75 transition-colors duration-200 hover:bg-white/5 hover:text-[#BF9F72]"
+                          role="menuitem"
+                        >
+                          {portfolioLink.name}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+
               return (
                 <Link
                   key={link.name}
@@ -153,9 +220,7 @@ export default function Navbar() {
       {/* Mobile Navigation Drawer */}
       <div
         className={`fixed inset-0 w-full h-screen bg-[#0b0c10]/95 backdrop-blur-xl z-40 md:hidden flex flex-col items-center justify-center transition-all duration-500 ease-in-out ${
-          isOpen
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 -translate-y-full"
+          isOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
         }`}
       >
         <nav className="flex flex-col items-center gap-8 text-center">
@@ -164,6 +229,69 @@ export default function Navbar() {
               pathname === "/"
                 ? activeSection === link.targetId
                 : pathname === link.path;
+
+            if (link.targetId === "portfolio") {
+              return (
+                <div key={link.name} className="flex flex-col items-center">
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={link.path}
+                      onClick={(e) => handleNavClick(e, link.targetId)}
+                      className={`text-[18px] font-medium tracking-[0.25em] transition-all duration-300 ${
+                        isActive
+                          ? "text-[#BF9F72] font-semibold"
+                          : "text-white/70 hover:text-[#BF9F72]"
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => setIsPortfolioOpen((current) => !current)}
+                      className="p-2 text-white/70 transition-colors hover:text-[#BF9F72]"
+                      aria-label="Toggle portfolio submenu"
+                      aria-expanded={isPortfolioOpen}
+                    >
+                      <ChevronDown
+                        size={18}
+                        className={`transition-transform duration-300 ${
+                          isPortfolioOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  <div
+                    className={`grid transition-all duration-300 ${
+                      isPortfolioOpen
+                        ? "mt-4 grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="flex flex-col items-center gap-4">
+                        {portfolioLinks.map((portfolioLink) => (
+                          <a
+                            key={portfolioLink.name}
+                            href={portfolioLink.url || undefined}
+                            onClick={(e) => {
+                              if (!portfolioLink.url) {
+                                e.preventDefault();
+                              } else {
+                                setIsOpen(false);
+                              }
+                            }}
+                            className="text-[13px] font-medium tracking-[0.15em] text-white/60 transition-colors hover:text-[#BF9F72]"
+                          >
+                            {portfolioLink.name}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
 
             return (
               <Link

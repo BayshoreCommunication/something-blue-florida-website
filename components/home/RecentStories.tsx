@@ -1,7 +1,6 @@
 "use client";
 
 import LazyImage from "components/common/LazyImage";
-import Link from "next/link";
 import Container from "components/layout/Container";
 import storiesData from "data/stories.json";
 
@@ -27,12 +26,12 @@ const recentStoryImages = [
 ] as const;
 
 export default function RecentStories() {
-  const stories = (storiesData as Story[]).slice(0, recentStoryImages.length).map(
-    (story, index) => ({
+  const stories = (storiesData as Story[])
+    .slice(0, recentStoryImages.length)
+    .map((story, index) => ({
       ...story,
       image: recentStoryImages[index],
-    }),
-  );
+    }));
 
   return (
     <section
@@ -108,12 +107,12 @@ function StoryCard({ story, isTall }: { story: Story; isTall: boolean }) {
         </p>
 
         {/* View Details Link */}
-        <Link
+        {/* <Link
           href={story.slug}
           className="inline-block text-[11px] font-medium tracking-[0.25em] text-[#0b0c10] hover:text-[#BF9F72] transition-colors uppercase border-b border-gray-200 hover:border-[#BF9F72] pb-0.5"
         >
           View Details &rarr;
-        </Link>
+        </Link> */}
       </div>
     </div>
   );
