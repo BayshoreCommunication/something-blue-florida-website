@@ -36,27 +36,33 @@ export default function LazyImage({
   const resolvedBlurDataURL = blurDataURL ?? generatedBlurDataURL;
 
   return (
-    <Image
-      alt={alt}
-      src={src}
-      {...rest}
-      priority={priority}
-      loading={priority ? undefined : (loading ?? "lazy")}
-      placeholder={
-        placeholder ??
-        (showSkeleton && resolvedBlurDataURL ? "blur" : "empty")
-      }
-      blurDataURL={resolvedBlurDataURL}
-      draggable={false}
-      onContextMenu={(e) => e.preventDefault()}
-      onDragStart={(e) => e.preventDefault()}
-      className={`${className || ""} photo-enhanced photo-protected ${
-        isLoaded ? "photo-loaded" : "photo-loading"
+    <span
+      className={`lazy-image-shell ${
+        showSkeleton && !isLoaded ? "image-skeleton" : ""
       }`}
-      onLoad={(event) => {
-        setLoadedSrc(srcKey);
-        onLoad?.(event);
-      }}
-    />
+    >
+      <Image
+        alt={alt}
+        src={src}
+        {...rest}
+        priority={priority}
+        loading={priority ? undefined : (loading ?? "lazy")}
+        placeholder={
+          placeholder ??
+          (showSkeleton && resolvedBlurDataURL ? "blur" : "empty")
+        }
+        blurDataURL={resolvedBlurDataURL}
+        draggable={false}
+        onContextMenu={(e) => e.preventDefault()}
+        onDragStart={(e) => e.preventDefault()}
+        className={`${className || ""} photo-enhanced photo-protected ${
+          isLoaded ? "photo-loaded" : "photo-loading"
+        }`}
+        onLoad={(event) => {
+          setLoadedSrc(srcKey);
+          onLoad?.(event);
+        }}
+      />
+    </span>
   );
 }
