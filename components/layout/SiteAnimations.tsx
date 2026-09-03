@@ -8,11 +8,6 @@ type SiteAnimationsProps = {
   rootRef: RefObject<HTMLElement>;
 };
 
-// ১. GSAP Plugin-কে কম্পোনেন্টের বাইরে বিশ্বজনীনভাবে (Globally) রেজিস্টার করুন
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
 function isReducedMotion() {
   return (
     typeof window !== "undefined" &&
@@ -38,6 +33,12 @@ export default function SiteAnimations({ rootRef }: SiteAnimationsProps) {
       return;
     }
 
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({
+      ignoreMobileResize: true,
+      autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+    });
+
     // ২. GSAP Context তৈরি
     const context = gsap.context(() => {
       // Cards Animation
@@ -62,7 +63,6 @@ export default function SiteAnimations({ rootRef }: SiteAnimationsProps) {
           scrollTrigger: {
             trigger: card,
             start: "top 88%",
-            once: true,
           },
         });
       });
@@ -90,7 +90,6 @@ export default function SiteAnimations({ rootRef }: SiteAnimationsProps) {
             scrollTrigger: {
               trigger: frame ?? image,
               start: "top 88%",
-              once: true,
             },
           })
           .fromTo(
@@ -140,7 +139,6 @@ export default function SiteAnimations({ rootRef }: SiteAnimationsProps) {
           scrollTrigger: {
             trigger: block,
             start: "top 88%",
-            once: true,
           },
         });
       });
@@ -170,7 +168,6 @@ export default function SiteAnimations({ rootRef }: SiteAnimationsProps) {
           scrollTrigger: {
             trigger: block,
             start: "top 88%",
-            once: true,
           },
         });
       });
