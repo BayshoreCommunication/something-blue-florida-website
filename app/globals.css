@@ -433,6 +433,7 @@ a.inline-flex,
 /* Responsive sizing for the seamless footer portrait slider. */
 .footer-gallery-track {
   --footer-slides-visible: 2;
+  backface-visibility: hidden;
 }
 
 .footer-gallery-slide {
