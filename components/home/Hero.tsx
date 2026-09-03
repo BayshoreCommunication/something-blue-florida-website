@@ -1,7 +1,7 @@
 "use client";
 
-import gsap from "gsap";
 import LazyImage from "components/common/LazyImage";
+import gsap from "gsap";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 
@@ -111,7 +111,7 @@ export default function Hero() {
         {/* Buttons Section */}
         <div className="flex flex-col sm:flex-row gap-5 mt-14 z-10 w-full max-w-[700px] justify-center px-4">
           <Link
-            href="/"
+            href="/contact"
             className="border border-[#BF9F72] bg-black/20 backdrop-blur-sm text-white hover:bg-[#BF9F72] hover:text-[#0b0c10] hover:border-[#BF9F72] transition-all duration-300 px-6 sm:px-8 py-4 text-[10px] sm:text-[11px] font-medium tracking-[0.25em] uppercase text-center flex items-center justify-center cursor-pointer"
           >
             Book Your Wedding Photography Experience Today
