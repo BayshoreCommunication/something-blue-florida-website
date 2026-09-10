@@ -8,6 +8,7 @@
     "start": "NODE_ENV=production next start",
     "lint": "next lint",
     "portfolio:generate": "node scripts/generate-portfolio.mjs",
+    "wedding-portfolio:generate": "node scripts/generate-wedding-portfolio.mjs",
     "images:placeholders": "node scripts/generate-image-placeholders.mjs"
   },
   "dependencies": {

@@ -28,7 +28,17 @@ interface PortfolioItem {
   height: number;
 }
 
-export default function PortfolioGrid() {
+interface PortfolioGridProps {
+  images?: PortfolioItem[];
+  sectionId?: string;
+  wishlistStorageKey?: string;
+}
+
+export default function PortfolioGrid({
+  images = imagesData as PortfolioItem[],
+  sectionId = "portfolio",
+  wishlistStorageKey = "portfolio-wishlist",
+}: PortfolioGridProps) {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [wishlistItems, setWishlistItems] = useState<number[]>([]);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
@@ -36,11 +46,11 @@ export default function PortfolioGrid() {
   const [itemsPerRow, setItemsPerRow] = useState(4);
 
   const filteredData = useMemo(() => {
-    return (imagesData as PortfolioItem[]).map((item, index) => ({
+    return images.map((item, index) => ({
       ...item,
       originalIndex: index,
     }));
-  }, []);
+  }, [images]);
 
   useEffect(() => {
     const updateItemsPerRow = () => {
@@ -66,12 +76,12 @@ export default function PortfolioGrid() {
 
   useEffect(() => {
     try {
-      const savedItems = window.localStorage.getItem("portfolio-wishlist");
+      const savedItems = window.localStorage.getItem(wishlistStorageKey);
       if (savedItems) setWishlistItems(JSON.parse(savedItems));
     } catch {
       // Ignore unavailable or invalid local storage data.
     }
-  }, []);
+  }, [wishlistStorageKey]);
 
   // Lightbox Zoom & Pan (Drag) State
   const [zoomLevel, setZoomLevel] = useState<number>(1);
@@ -116,7 +126,7 @@ export default function PortfolioGrid() {
 
       try {
         window.localStorage.setItem(
-          "portfolio-wishlist",
+          wishlistStorageKey,
           JSON.stringify(nextItems),
         );
       } catch {
@@ -129,7 +139,7 @@ export default function PortfolioGrid() {
 
   const getShareUrl = () => {
     const url = new URL(window.location.href);
-    url.hash = "portfolio";
+    url.hash = sectionId;
     return url.toString();
   };
 
@@ -417,7 +427,7 @@ export default function PortfolioGrid() {
 
   return (
     <section
-      id="portfolio"
+      id={sectionId}
       onContextMenu={(e) => e.preventDefault()}
       className="bg-[#0b0c10] py-8 border-y border-black select-none overflow-hidden relative"
     >

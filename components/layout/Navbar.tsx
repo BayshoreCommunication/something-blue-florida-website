@@ -69,7 +69,7 @@ export default function Navbar() {
   const portfolioLinks = [
     {
       name: "Wedding Portfolio",
-      url: "https://www.somethingblueflorida.com",
+      url: "/wedding-portfolio",
     },
     {
       name: "Engagements",
