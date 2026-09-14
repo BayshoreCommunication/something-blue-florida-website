@@ -83,14 +83,14 @@ export default function Navbar() {
       name: "Kids & Babies",
       url: "https://www.somethingblueflorida.com/kids-babies",
     },
-    {
-      name: "Portraits",
-      url: "https://www.somethingblueflorida.com/senior-portraits",
-    },
-    {
-      name: "Christmas",
-      url: "https://www.somethingblueflorida.com/about-3",
-    },
+    // {
+    //   name: "Portraits",
+    //   url: "https://www.somethingblueflorida.com/senior-portraits",
+    // },
+    // {
+    //   name: "Christmas",
+    //   url: "https://www.somethingblueflorida.com/about-3",
+    // },
   ];
 
   const isHomeHero = pathname === "/" && !scrolled;
