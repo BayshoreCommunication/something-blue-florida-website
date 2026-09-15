@@ -22,7 +22,7 @@ const greatVibes = Great_Vibes({
 });
 
 const siteUrl = "https://www.somethingblueflorida.com";
-const ogImageUrl = `${siteUrl}/og-image.png`;
+const ogImageUrl = `${siteUrl}/opengraph-image.png`;
 
 /* ---------------- METADATA ---------------- */
 
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     siteName: "Something Blue Florida",
     images: [
       {
-        url: `${siteUrl}opengraph-image.png`,
+        url: ogImageUrl,
         width: 1200,
         height: 630,
         alt: "Something Blue Florida Wedding Photography",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Something Blue | Florida Wedding Photography & Videography",
     description: "Florida's premier wedding photography and videography studio. We capture timeless moments, elegant celebrations, and genuine emotions.",
-    images: [`${siteUrl}opengraph-image.png`],
+    images: [ogImageUrl],
   },
 };
 
