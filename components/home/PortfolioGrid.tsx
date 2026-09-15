@@ -32,12 +32,18 @@ interface PortfolioGridProps {
   images?: PortfolioItem[];
   sectionId?: string;
   wishlistStorageKey?: string;
+  /** Number of images to reveal on first load (e.g. one "batch" folder). Falls back to the default row-based reveal when omitted. */
+  initialCount?: number;
+  /** Number of images to reveal each time "Show More" is triggered. Falls back to the default row-based batch size when omitted. */
+  loadMoreCount?: number;
 }
 
 export default function PortfolioGrid({
   images = imagesData as PortfolioItem[],
   sectionId = "portfolio",
   wishlistStorageKey = "portfolio-wishlist",
+  initialCount,
+  loadMoreCount,
 }: PortfolioGridProps) {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [wishlistItems, setWishlistItems] = useState<number[]>([]);
@@ -74,6 +80,17 @@ export default function PortfolioGrid({
   const [targetBatchLimit, setTargetBatchLimit] = useState<number>(3);
   const [isPaused, setIsPaused] = useState<boolean>(false);
 
+  // When initialCount/loadMoreCount are supplied (e.g. one "batch" folder of
+  // images per reveal), track exact image counts instead of row counts so the
+  // reveal size stays precise across responsive column-count changes.
+  const [batchesRevealed, setBatchesRevealed] = useState<number>(1);
+  const revealedImageCap = initialCount
+    ? Math.min(
+        filteredData.length,
+        initialCount + Math.max(0, batchesRevealed - 1) * (loadMoreCount ?? initialCount),
+      )
+    : null;
+
   useEffect(() => {
     try {
       const savedItems = window.localStorage.getItem(wishlistStorageKey);
@@ -109,8 +126,23 @@ export default function PortfolioGrid({
     return rows;
   }, [filteredData, itemsPerRow]);
 
-  const visibleRows = allRows.slice(0, visibleRowsCount);
-  const hasMore = visibleRowsCount < allRows.length;
+  const visibleRows = useMemo(() => {
+    if (revealedImageCap == null) return allRows.slice(0, visibleRowsCount);
+
+    const rows: typeof allRows = [];
+    let remaining = revealedImageCap;
+    for (const row of allRows) {
+      if (remaining <= 0) break;
+      rows.push(remaining >= row.length ? row : row.slice(0, remaining));
+      remaining -= row.length;
+    }
+    return rows;
+  }, [allRows, visibleRowsCount, revealedImageCap]);
+
+  const hasMore =
+    revealedImageCap == null
+      ? visibleRowsCount < allRows.length
+      : revealedImageCap < filteredData.length;
 
   // Reset Zoom & Pan state helper
   const resetZoomAndPan = () => {
@@ -166,9 +198,10 @@ export default function PortfolioGrid({
     await copyShareLink();
   };
 
-  // 3. Observer setup for Hybrid Infinite Scroll
+  // 3. Observer setup for Hybrid Infinite Scroll (row-based mode only; count
+  // mode reveals exact batches via the Show More button instead).
   useEffect(() => {
-    if (isPaused || !hasMore) return;
+    if (isPaused || !hasMore || revealedImageCap != null) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -196,9 +229,13 @@ export default function PortfolioGrid({
     return () => {
       if (currentRef) observer.unobserve(currentRef);
     };
-  }, [isPaused, hasMore, targetBatchLimit, allRows.length]);
+  }, [isPaused, hasMore, targetBatchLimit, allRows.length, revealedImageCap]);
 
   const handleShowMore = () => {
+    if (revealedImageCap != null) {
+      setBatchesRevealed((prev) => prev + 1);
+      return;
+    }
     setTargetBatchLimit((prev) => prev + BATCH_SIZE);
     setIsPaused(false);
   };

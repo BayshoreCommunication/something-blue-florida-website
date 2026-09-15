@@ -67,6 +67,8 @@ const WeddingPortfolio = () => {
         images={weddingPortfolioData}
         sectionId="wedding-gallery"
         wishlistStorageKey="wedding-portfolio-wishlist"
+        initialCount={30}
+        loadMoreCount={30}
       />
     </div>
   );
