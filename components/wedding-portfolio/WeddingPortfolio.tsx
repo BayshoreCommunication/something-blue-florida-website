@@ -13,12 +13,12 @@ const WeddingPortfolio = () => {
         <div className="absolute inset-0 w-full h-full select-none z-0 overflow-hidden">
           <div className="relative w-full h-full animate-wp-ken-burns">
             <LazyImage
-              src={weddingPortfolioData[0].src}
+              src="/images/wedding-photography/banner.jpg"
               alt="Wedding photography portfolio"
               fill
               priority
               quality={95}
-              className="object-cover"
+              className="object-cover object-center"
             />
           </div>
           <div className="absolute inset-0 bg-[#0b0c10]/70 z-10" />

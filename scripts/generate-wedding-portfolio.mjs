@@ -15,27 +15,31 @@ const manifestPath = path.join(
   "wedding-portfolio.json",
 );
 
-// Images are organized into ordered batch folders (first30, second30, third30, ...)
-// so the gallery can reveal one batch at a time. New batches just need a folder
-// name starting with the next ordinal word below.
-const ORDINAL_WORDS = [
-  "first",
-  "second",
-  "third",
-  "fourth",
-  "fifth",
-  "sixth",
-  "seventh",
-  "eighth",
-  "ninth",
-  "tenth",
+// Images are organized into ordered batch folders (first30, second30, third30,
+// four30, five30, ...) so the gallery can reveal one batch at a time. New
+// batches just need a folder name starting with the next word below (either
+// the ordinal or cardinal form is accepted, since existing folders mix both).
+const BATCH_WORD_ORDER = [
+  ["first", "one"],
+  ["second", "two"],
+  ["third", "three"],
+  ["fourth", "four"],
+  ["fifth", "five"],
+  ["sixth", "six"],
+  ["seventh", "seven"],
+  ["eighth", "eight"],
+  ["ninth", "nine"],
+  ["tenth", "ten"],
 ];
+
+const BATCH_WORD_RANK = new Map(
+  BATCH_WORD_ORDER.flatMap((words, index) => words.map((word) => [word, index])),
+);
 
 const batchRank = (dirName) => {
   const match = dirName.match(/^[a-z]+/i);
   const word = match ? match[0].toLowerCase() : "";
-  const index = ORDINAL_WORDS.indexOf(word);
-  return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+  return BATCH_WORD_RANK.get(word) ?? Number.MAX_SAFE_INTEGER;
 };
 
 const entries = await fs.readdir(sourceDirectory, { withFileTypes: true });

@@ -21,7 +21,7 @@ const greatVibes = Great_Vibes({
   variable: "--font-great-vibes",
 });
 
-const siteUrl = "https://something-blue-florida.vercel.app/";
+const siteUrl = "https://www.somethingblueflorida.com";
 const ogImageUrl = `${siteUrl}/og-image.png`;
 
 /* ---------------- METADATA ---------------- */
@@ -29,7 +29,7 @@ const ogImageUrl = `${siteUrl}/og-image.png`;
 export const metadata: Metadata = {
   title: "Something Blue | Florida Wedding Photography & Videography",
   description: "Florida's premier wedding photography and videography studio. We capture timeless moments, elegant celebrations, and genuine emotions with artistic devotion across Florida. Book your experience today.",
-  metadataBase: new URL("https://something-blue-florida.vercel.app/"),
+  metadataBase: new URL("https://www.somethingblueflorida.com"),
   alternates: {
     canonical: "/",
     languages: {
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Something Blue | Florida Wedding Photography & Videography",
     description: "Florida's premier wedding photography and videography studio. We capture timeless moments, elegant celebrations, and genuine emotions with artistic devotion.",
-    url: "https://something-blue-florida.vercel.app/",
+    url: "https://www.somethingblueflorida.com/",
     siteName: "Something Blue Florida",
     images: [
       {

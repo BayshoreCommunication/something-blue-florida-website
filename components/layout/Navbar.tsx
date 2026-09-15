@@ -73,15 +73,15 @@ export default function Navbar() {
     },
     {
       name: "Engagements",
-      url: "https://www.somethingblueflorida.com/engagement-couples",
+      url: "https://portfolio.somethingblueflorida.com/engagement-couples",
     },
     {
       name: "Beach Portraits",
-      url: "https://www.somethingblueflorida.com/beachportraitsami",
+      url: "https://portfolio.somethingblueflorida.com/beachportraitsami",
     },
     {
       name: "Kids & Babies",
-      url: "https://www.somethingblueflorida.com/kids-babies",
+      url: "https://portfolio.somethingblueflorida.com/kids-babies",
     },
     // {
     //   name: "Portraits",
