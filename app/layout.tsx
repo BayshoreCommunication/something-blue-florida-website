@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import Script from "next/script";
 import { Gilda_Display, Great_Vibes } from "next/font/google";
 import ClientLayout from "./client-layout";
 import RootLayoutComponent from "components/layout/RootLayout";
@@ -23,6 +24,7 @@ const greatVibes = Great_Vibes({
 
 const siteUrl = "https://www.somethingblueflorida.com";
 const ogImageUrl = `${siteUrl}/opengraph-image.png`;
+const GTM_ID = "GTM-MBRBWZC4";
 
 /* ---------------- METADATA ---------------- */
 
@@ -69,7 +71,36 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${gildaDisplay.variable} ${greatVibes.variable} ${gildaDisplay.className}`}>
+      <head>
+        {/* Google Tag Manager - dataLayer init */}
+        <Script id="gtm-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+          `}
+        </Script>
+
+        {/* Google Tag Manager - script */}
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`}
+        />
+      </head>
+
       <body>
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+
         {/* SVG Filter for real-time browser-level image sharpening */}
         <svg style={{ display: 'none', position: 'absolute', width: 0, height: 0 }} aria-hidden="true">
           <filter id="crisp-sharpen">
