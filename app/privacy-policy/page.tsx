@@ -63,7 +63,7 @@ function List({ items }: { items: ReactNode[] }) {
 
 export default function PrivacyPolicyPage() {
   return (
-    <main className="bg-[#FAF8F5] min-h-screen pt-32 pb-20">
+    <main className="bg-[#FAF8F5] min-h-screen pt-40 sm:pt-44 pb-20">
       <Container className="max-w-[820px] px-6 sm:px-12">
         {/* Heading */}
         <div className="text-center mb-12 sm:mb-16">
