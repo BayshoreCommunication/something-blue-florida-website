@@ -4,7 +4,7 @@ export default function WhereWeShoot() {
   return (
     <section
       id="where-we-shoot"
-      className="bg-[#FAF8F5] py-16 sm:py-20 lg:py-24 border-b border-gray-100 relative z-20"
+      className="bg-[#FAF8F5] pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-10 lg:pb-12 border-b border-gray-100 relative z-20"
     >
       <Container className="max-w-4xl mx-auto px-6 sm:px-8 text-center">
         <div className="mb-8">

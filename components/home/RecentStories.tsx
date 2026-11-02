@@ -36,7 +36,7 @@ export default function RecentStories() {
   return (
     <section
       id="reviews"
-      className="bg-[#FAF8F5] py-20 sm:py-28 border-b border-gray-150/50 relative z-20 select-none"
+      className="bg-[#FAF8F5] pt-10 sm:pt-14 pb-20 sm:pb-28 border-b border-gray-150/50 relative z-20 select-none"
     >
       <Container className="w-full max-w-[1440px] px-4 sm:px-16 lg:px-8">
         {/* Responsive Grid Structure mapping to reference image layout */}
