@@ -25,12 +25,11 @@ import {
 } from "lucide-react";
 import { trackLead } from "lib/tracking";
 
-// EmailJS credentials — fill these in from https://dashboard.emailjs.com
+// EmailJS credentials (from https://dashboard.emailjs.com).
 // (Email Services → Service ID, Email Templates → Template ID, Account → Public Key).
-// Until all three are set, submitting the form shows an error.
-const EMAILJS_SERVICE_ID: string = "";
-const EMAILJS_TEMPLATE_ID: string = "";
-const EMAILJS_PUBLIC_KEY: string = "";
+const EMAILJS_SERVICE_ID: string = "service_rz6rev2";
+const EMAILJS_TEMPLATE_ID: string = "template_cdvo4a1";
+const EMAILJS_PUBLIC_KEY: string = "Q_erXp9P_2FVHIn3J";
 
 // What the result popup shows after a submit attempt.
 type Status =
