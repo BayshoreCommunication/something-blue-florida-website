@@ -25,6 +25,7 @@ const greatVibes = Great_Vibes({
 const siteUrl = "https://www.somethingblueflorida.com";
 const ogImageUrl = `${siteUrl}/opengraph-image.png`;
 const GTM_ID = "GTM-MBRBWZC4";
+const GA_ID = "G-8ZG9Y14V5D";
 
 /* ---------------- METADATA ---------------- */
 
@@ -72,12 +73,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${gildaDisplay.variable} ${greatVibes.variable} ${gildaDisplay.className}`}>
       <head>
-        {/* Google Tag Manager - dataLayer init */}
+        {/* Google Tag Manager + Google tag (gtag.js) - dataLayer init */}
         <Script id="gtm-init" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
+            gtag('config', '${GA_ID}');
             window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
           `}
         </Script>
@@ -87,6 +89,13 @@ export default function RootLayout({
           id="gtm-script"
           strategy="afterInteractive"
           src={`https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`}
+        />
+
+        {/* Google tag (gtag.js) - script */}
+        <Script
+          id="gtag-script"
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
         />
       </head>
 

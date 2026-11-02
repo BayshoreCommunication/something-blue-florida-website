@@ -1,8 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
+import { AnimatePresence, motion } from "framer-motion";
 import {
+  AlertCircle,
+  Heart,
+  Loader2,
+  X,
   User,
   Mail,
   Phone,
@@ -19,8 +24,15 @@ import {
   CalendarRange,
 } from "lucide-react";
 
-const SUCCESS_MESSAGE =
-  "Congratulations! 💛 Your inquiry made our day. We'll give you a call within 24 hours at (509) 592-1745. We can't wait to hear your love story!";
+// EmailJS credentials — fill these in from https://dashboard.emailjs.com
+// (Email Services → Service ID, Email Templates → Template ID, Account → Public Key).
+// Until all three are set, submitting the form shows an error.
+const EMAILJS_SERVICE_ID: string = "";
+const EMAILJS_TEMPLATE_ID: string = "";
+const EMAILJS_PUBLIC_KEY: string = "";
+
+const SEND_ERROR_MESSAGE =
+  "Sorry, we couldn't send your inquiry right now. Please try again, or call us at (509) 592-1745.";
 
 // Tells Google Tag Manager a real inquiry was sent, so it can count the lead.
 const trackLead = (email: string, phone: string) => {
@@ -34,10 +46,8 @@ export default function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<{
-    success: boolean;
-    message: string;
-  } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
   // Toggle checkbox selections
@@ -49,80 +59,52 @@ export default function ContactForm() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const showError = (message: string) => {
+    setError(message);
+    statusRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formRef.current) return;
 
-    // Validate service selection
     if (selectedServices.length === 0) {
-      setStatus({
-        success: false,
-        message: "Please select at least one service you are interested in.",
-      });
-      statusRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
+      showError("Please select at least one service you are interested in.");
+      return;
+    }
+
+    if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+      console.error(
+        "EmailJS is not configured. Fill in EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID and EMAILJS_PUBLIC_KEY in ContactForm.tsx.",
+      );
+      showError(SEND_ERROR_MESSAGE);
       return;
     }
 
     setLoading(true);
-    setStatus(null);
-
-    // Replace the placeholders with your actual EmailJS credentials:
-    const SERVICE_ID = "service_something_blue"; // Replace with your Service ID
-    const TEMPLATE_ID = "template_wedding_inquiry"; // Replace with your Template ID
-    const PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY"; // Replace with your Public Key
-
-    if (PUBLIC_KEY === "YOUR_EMAILJS_PUBLIC_KEY") {
-      // Mock successful response if API credentials are not set yet
-      setTimeout(() => {
-        // Demo mode: nothing is actually sent until the EmailJS keys are set.
-        setStatus({ success: true, message: SUCCESS_MESSAGE });
-        setLoading(false);
-        formRef.current?.reset();
-        setSelectedServices([]);
-        statusRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }, 1500);
-      return;
-    }
+    setError(null);
 
     const formData = new FormData(formRef.current);
     const leadEmail = String(formData.get("email") ?? "");
     const leadPhone = String(formData.get("phone") ?? "");
 
-    emailjs
-      .sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current, PUBLIC_KEY)
-      .then(
-        () => {
-          trackLead(leadEmail, leadPhone);
-          setStatus({ success: true, message: SUCCESS_MESSAGE });
-          formRef.current?.reset();
-          setSelectedServices([]);
-          statusRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        },
-        (error) => {
-          console.error("EmailJS Error:", error);
-          setStatus({
-            success: false,
-            message:
-              "Oops! Something went wrong while sending your message. Please try again.",
-          });
-          statusRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        },
-      )
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      await emailjs.sendForm(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        { publicKey: EMAILJS_PUBLIC_KEY },
+      );
+      trackLead(leadEmail, leadPhone);
+      formRef.current?.reset();
+      setSelectedServices([]);
+      setShowSuccess(true);
+    } catch (err) {
+      console.error("EmailJS Error:", err);
+      showError(SEND_ERROR_MESSAGE);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -432,17 +414,15 @@ export default function ContactForm() {
           </div>
         </div>
 
-        {/* Status Alerts */}
-        <div ref={statusRef}>
-          {status && (
+        {/* Error Alert */}
+        <div ref={statusRef} aria-live="polite">
+          {error && (
             <div
-              className={`p-4 rounded-lg text-sm border font-serif transition-all duration-300 ${
-                status.success
-                  ? "bg-[#BF9F72]/10 border-[#BF9F72]/30 text-gray-800"
-                  : "bg-red-50 border-red-200 text-red-700"
-              }`}
+              role="alert"
+              className="flex items-start gap-3 p-4 rounded-lg text-sm border font-serif bg-red-50 border-red-200 text-red-700"
             >
-              {status.message}
+              <AlertCircle size={18} className="mt-0.5 shrink-0" />
+              <span>{error}</span>
             </div>
           )}
         </div>
@@ -454,13 +434,127 @@ export default function ContactForm() {
             disabled={loading}
             className="border-2 border-[#0b0c10] bg-[#0b0c10] text-[#FAF8F5] hover:bg-transparent hover:text-[#0b0c10] transition-colors duration-300 px-10 py-4 text-[11px] font-semibold tracking-[0.25em] uppercase shadow-md flex items-center gap-2 cursor-pointer disabled:opacity-50"
           >
-            {loading ? "Sending Inquiry..." : "Submit Inquiry"} &rarr;
+            {loading ? (
+              <>
+                <Loader2 size={14} className="animate-spin" /> Sending
+                Inquiry...
+              </>
+            ) : (
+              <>Submit Inquiry &rarr;</>
+            )}
           </button>
           <span className="text-gray-400 text-sm font-serif italic">
             We typically respond within 24 hours.
           </span>
         </div>
       </form>
+
+      <SuccessPopup open={showSuccess} onClose={() => setShowSuccess(false)} />
     </section>
+  );
+}
+
+function SuccessPopup({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
+  // Close on Escape and stop the page behind from scrolling while open.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open, onClose]);
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#0b0c10]/60 backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="inquiry-success-title"
+            className="relative w-full max-w-md bg-[#FAF8F5] rounded-2xl shadow-2xl px-8 pt-12 pb-9 text-center overflow-hidden"
+            initial={{ opacity: 0, scale: 0.9, y: 24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 12 }}
+            transition={{ type: "spring", damping: 22, stiffness: 260 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Inner gold frame */}
+            <div className="pointer-events-none absolute inset-3 rounded-xl border border-[#BF9F72]/40" />
+
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close"
+              className="absolute top-5 right-5 p-1.5 rounded-full text-[#0b0c10]/50 hover:text-[#0b0c10] hover:bg-[#BF9F72]/10 transition-colors"
+            >
+              <X size={18} />
+            </button>
+
+            {/* Heart badge */}
+            <motion.div
+              className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#BF9F72]/15 ring-1 ring-[#BF9F72]/40"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.15, type: "spring", stiffness: 300, damping: 14 }}
+            >
+              <Heart size={28} className="text-[#BF9F72]" fill="#BF9F72" />
+            </motion.div>
+
+            <h3
+              id="inquiry-success-title"
+              className="text-3xl sm:text-4xl font-normal text-[#0b0c10] tracking-wide font-serif"
+            >
+              Congratulations!
+            </h3>
+
+            <div className="flex items-center justify-center gap-3 my-5 select-none">
+              <div className="h-[1px] w-14 bg-[#BF9F72]/50" />
+              <span className="text-[#BF9F72] text-[9px] rotate-45">◆</span>
+              <div className="h-[1px] w-14 bg-[#BF9F72]/50" />
+            </div>
+
+            <p className="text-[15px] leading-relaxed text-gray-700 font-serif">
+              Your inquiry made our day. 💛
+              <br />
+              We&rsquo;ll give you a call within 24 hours at
+            </p>
+            <a
+              href="tel:+15095921745"
+              className="inline-block mt-2 text-lg font-serif tracking-wide text-[#0b0c10] border-b border-[#BF9F72]/60 hover:border-[#BF9F72] transition-colors"
+            >
+              (509) 592-1745
+            </a>
+            <p className="mt-5 text-[15px] italic text-gray-600 font-serif">
+              We can&rsquo;t wait to hear your love story!
+            </p>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="mt-8 border-2 border-[#0b0c10] bg-[#0b0c10] text-[#FAF8F5] hover:bg-transparent hover:text-[#0b0c10] transition-colors duration-300 px-10 py-3.5 text-[11px] font-semibold tracking-[0.25em] uppercase"
+            >
+              Close
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

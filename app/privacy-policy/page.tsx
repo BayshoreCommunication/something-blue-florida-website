@@ -101,7 +101,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <List
               items={[
-                "Your name and your partner's name",
+                "Your name",
                 "Email address and phone number",
                 "Wedding date, venue, budget and coverage length",
                 "The services you're interested in and anything else you choose to tell us",
