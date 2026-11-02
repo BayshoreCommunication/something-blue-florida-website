@@ -23,6 +23,7 @@ import {
   Utensils,
   CalendarRange,
 } from "lucide-react";
+import { trackLead } from "lib/tracking";
 
 // EmailJS credentials — fill these in from https://dashboard.emailjs.com
 // (Email Services → Service ID, Email Templates → Template ID, Account → Public Key).
@@ -34,13 +35,6 @@ const EMAILJS_PUBLIC_KEY: string = "";
 const SEND_ERROR_MESSAGE =
   "Sorry, we couldn't send your inquiry right now. Please try again, or call us at (509) 592-1745.";
 
-// Tells Google Tag Manager a real inquiry was sent, so it can count the lead.
-const trackLead = (email: string, phone: string) => {
-  if (typeof window === "undefined") return;
-  const w = window as typeof window & { dataLayer?: Record<string, unknown>[] };
-  w.dataLayer = w.dataLayer || [];
-  w.dataLayer.push({ event: "generate_lead", email, phone });
-};
 
 export default function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -140,7 +134,12 @@ export default function ContactForm() {
         </div>
       </div>
 
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-10">
+      <form
+        id="inquiry-form"
+        ref={formRef}
+        onSubmit={handleSubmit}
+        className="space-y-10"
+      >
         {/* 2-Column Fields Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
           {/* First Name */}

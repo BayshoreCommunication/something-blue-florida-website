@@ -9,6 +9,8 @@ import ClientLayout from "./client-layout";
 import RootLayoutComponent from "components/layout/RootLayout";
 import Navbar from "components/layout/Navbar";
 import Footer from "components/layout/Footer";
+import ContactClickTracker from "components/layout/ContactClickTracker";
+import { ADS_ID, GA_ID } from "lib/tracking";
 
 const gildaDisplay = Gilda_Display({
   subsets: ["latin"],
@@ -25,7 +27,6 @@ const greatVibes = Great_Vibes({
 const siteUrl = "https://www.somethingblueflorida.com";
 const ogImageUrl = `${siteUrl}/opengraph-image.png`;
 const GTM_ID = "GTM-MBRBWZC4";
-const GA_ID = "G-8ZG9Y14V5D";
 
 /* ---------------- METADATA ---------------- */
 
@@ -80,6 +81,7 @@ export default function RootLayout({
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', '${GA_ID}');
+            gtag('config', '${ADS_ID}');
             window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
           `}
         </Script>
@@ -131,6 +133,8 @@ export default function RootLayout({
             `}
           </style>
         </noscript>
+
+        <ContactClickTracker />
 
         <RootLayoutComponent>
           <Navbar />
