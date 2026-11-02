@@ -213,6 +213,14 @@ export default function Footer() {
           </span>
           <div className="hidden sm:block h-[1px] w-12 sm:w-20 bg-[#BF9F72]/50" />
         </div>
+        <div className="mt-4 text-center">
+          <Link
+            href="/privacy-policy"
+            className="text-[10px] sm:text-[11px] font-semibold tracking-[0.2em] text-gray-600 uppercase font-serif hover:text-[#BF9F72] transition-colors"
+          >
+            Privacy Policy
+          </Link>
+        </div>
       </div>
     </footer>
   );
