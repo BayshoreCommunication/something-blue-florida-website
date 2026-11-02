@@ -71,18 +71,6 @@ export default function Navbar() {
       name: "Wedding Portfolio",
       url: "/wedding-portfolio",
     },
-    {
-      name: "Engagements",
-      url: "https://portfolio.somethingblueflorida.com/engagement-couples",
-    },
-    {
-      name: "Beach Portraits",
-      url: "https://portfolio.somethingblueflorida.com/beachportraitsami",
-    },
-    {
-      name: "Kids & Babies",
-      url: "https://portfolio.somethingblueflorida.com/kids-babies",
-    },
     // {
     //   name: "Portraits",
     //   url: "https://www.somethingblueflorida.com/senior-portraits",

@@ -103,24 +103,24 @@ export default function Hero() {
         </div>
 
         {/* Hero Headings (Fixed Center) */}
-        <h1 className="text-white text-3xl sm:text-5xl md:text-6xl lg:text-7.5xl font-normal tracking-[0.02em] leading-[1.25] max-w-[950px] z-10 drop-shadow-md select-text">
-          Make A Wonderful Story <br />
-          For Your Wedding
+        <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal tracking-[0.02em] leading-[1.25] max-w-[1000px] z-10 drop-shadow-md select-text">
+          Tampa Bay &amp; Florida Wedding <br className="hidden md:block" />
+          Photography and Videography
         </h1>
 
-        {/* Buttons Section */}
-        <div className="flex flex-col sm:flex-row gap-5 mt-14 z-10 w-full max-w-[700px] justify-center px-4">
+        <p className="mt-6 text-white/80 text-[15px] sm:text-[17px] md:text-[19px] leading-[1.7] max-w-[760px] z-10 font-serif tracking-wide select-text">
+          Timeless, natural wedding photos and films, from beachfront
+          ceremonies to historic estates. Over 1,000 weddings were captured
+          across Florida.
+        </p>
+
+        {/* Button */}
+        <div className="flex justify-center mt-10 sm:mt-12 z-10 w-full px-4">
           <Link
             href="/contact"
-            className="border border-[#BF9F72] bg-black/20 backdrop-blur-sm text-white hover:bg-[#BF9F72] hover:text-[#0b0c10] hover:border-[#BF9F72] transition-all duration-300 px-6 sm:px-8 py-4 text-[10px] sm:text-[11px] font-medium tracking-[0.25em] uppercase text-center flex items-center justify-center cursor-pointer"
+            className="group border border-[#BF9F72] bg-black/20 backdrop-blur-sm text-white hover:bg-[#BF9F72] hover:text-[#0b0c10] hover:border-[#BF9F72] transition-all duration-300 px-8 sm:px-12 py-4 text-[11px] sm:text-[12px] font-medium tracking-[0.25em] uppercase text-center flex items-center justify-center gap-3 whitespace-nowrap cursor-pointer"
           >
-            Book Your Wedding Photography Experience Today
-          </Link>
-          <Link
-            href="/contact"
-            className="group border border-[#BF9F72] bg-black/20 backdrop-blur-sm text-[#BF9F72] hover:bg-[#BF9F72] hover:text-[#0b0c10] hover:border-[#BF9F72] transition-all duration-300 px-6 sm:px-8 py-4 text-[10px] sm:text-[11px] font-medium tracking-[0.25em] uppercase text-center flex items-center justify-center gap-3 whitespace-nowrap cursor-pointer"
-          >
-            Contact Me{" "}
+            Check Your Date
             <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
               &rarr;
             </span>

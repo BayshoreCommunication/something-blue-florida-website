@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
 import {
   User,
-  UserPlus,
   Mail,
   Phone,
   Calendar,
@@ -19,6 +18,17 @@ import {
   Utensils,
   CalendarRange,
 } from "lucide-react";
+
+const SUCCESS_MESSAGE =
+  "Congratulations! 💛 Your inquiry made our day. We'll give you a call within 24 hours at (509) 592-1745. We can't wait to hear your love story!";
+
+// Tells Google Tag Manager a real inquiry was sent, so it can count the lead.
+const trackLead = (email: string, phone: string) => {
+  if (typeof window === "undefined") return;
+  const w = window as typeof window & { dataLayer?: Record<string, unknown>[] };
+  w.dataLayer = w.dataLayer || [];
+  w.dataLayer.push({ event: "generate_lead", email, phone });
+};
 
 export default function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -67,11 +77,8 @@ export default function ContactForm() {
     if (PUBLIC_KEY === "YOUR_EMAILJS_PUBLIC_KEY") {
       // Mock successful response if API credentials are not set yet
       setTimeout(() => {
-        setStatus({
-          success: true,
-          message:
-            "Demo Mode: Your inquiry was submitted successfully! (Connect your EmailJS keys in ContactForm.tsx to send actual emails).",
-        });
+        // Demo mode: nothing is actually sent until the EmailJS keys are set.
+        setStatus({ success: true, message: SUCCESS_MESSAGE });
         setLoading(false);
         formRef.current?.reset();
         setSelectedServices([]);
@@ -83,15 +90,16 @@ export default function ContactForm() {
       return;
     }
 
+    const formData = new FormData(formRef.current);
+    const leadEmail = String(formData.get("email") ?? "");
+    const leadPhone = String(formData.get("phone") ?? "");
+
     emailjs
       .sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current, PUBLIC_KEY)
       .then(
         () => {
-          setStatus({
-            success: true,
-            message:
-              "Thank you! Your wedding inquiry has been sent successfully. We will get back to you shortly.",
-          });
+          trackLead(leadEmail, leadPhone);
+          setStatus({ success: true, message: SUCCESS_MESSAGE });
           formRef.current?.reset();
           setSelectedServices([]);
           statusRef.current?.scrollIntoView({
@@ -154,7 +162,7 @@ export default function ContactForm() {
         {/* 2-Column Fields Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
           {/* First Name */}
-          <div className="flex flex-col">
+          <div className="flex flex-col md:col-span-2">
             <label className="text-[10px] sm:text-[11px] font-bold tracking-[0.15em] text-[#0b0c10] mb-2 uppercase">
               Your Name<span className="text-[#BF9F72] ml-0.5">*</span>
             </label>
@@ -167,26 +175,6 @@ export default function ContactForm() {
                 type="text"
                 name="first_name"
                 placeholder="Please provide your first name"
-                className="w-full py-3.5 pl-3 pr-4 bg-transparent text-sm text-gray-800 placeholder-gray-400 focus:outline-none font-serif"
-              />
-            </div>
-          </div>
-
-          {/* Fiance's First Name */}
-          <div className="flex flex-col">
-            <label className="text-[10px] sm:text-[11px] font-bold tracking-[0.15em] text-[#0b0c10] mb-2 uppercase">
-              Fiance&rsquo;s Name
-              <span className="text-[#BF9F72] ml-0.5">*</span>
-            </label>
-            <div className="relative flex items-center bg-[#FAF8F5] border border-[#BF9F72]/30 rounded-lg overflow-hidden focus-within:border-[#BF9F72] transition-colors duration-300">
-              <span className="pl-4 text-[#BF9F72]">
-                <UserPlus size={18} />
-              </span>
-              <input
-                required
-                type="text"
-                name="fiance_name"
-                placeholder="Please provide first name"
                 className="w-full py-3.5 pl-3 pr-4 bg-transparent text-sm text-gray-800 placeholder-gray-400 focus:outline-none font-serif"
               />
             </div>
@@ -311,10 +299,13 @@ export default function ContactForm() {
 
         {/* Services Checkboxes */}
         <div className="flex flex-col">
-          <label className="text-[10px] sm:text-[11px] font-bold tracking-[0.15em] text-[#0b0c10] mb-4 uppercase">
-            Services that you are interested in
+          <h3 className="text-xl sm:text-2xl font-normal text-[#0b0c10] tracking-wide font-serif mb-2">
+            Build Your Wedding Coverage
             <span className="text-[#BF9F72] ml-0.5">*</span>
-          </label>
+          </h3>
+          <p className="text-[13px] sm:text-[14px] text-gray-600 font-serif tracking-wide mb-4">
+            Every package is tailored to your day. Choose from:
+          </p>
 
           <input
             type="hidden"
@@ -466,7 +457,7 @@ export default function ContactForm() {
             {loading ? "Sending Inquiry..." : "Submit Inquiry"} &rarr;
           </button>
           <span className="text-gray-400 text-sm font-serif italic">
-            We typically respond within 24–48 hours.
+            We typically respond within 24 hours.
           </span>
         </div>
       </form>
