@@ -554,7 +554,7 @@ function StatusPopup({
             {(status.kind === "success" || status.showPhone) && (
               <a
                 href="tel:+15095921745"
-                className="inline-block mt-2 text-lg font-serif tracking-wide text-[#0b0c10] border-b border-[#BF9F72]/60 hover:border-[#BF9F72] transition-colors"
+                className="block w-fit mx-auto mt-2 text-lg font-serif tracking-wide text-[#0b0c10] border-b border-[#BF9F72]/60 hover:border-[#BF9F72] transition-colors"
               >
                 (509) 592-1745
               </a>
@@ -569,7 +569,7 @@ function StatusPopup({
             <button
               type="button"
               onClick={onClose}
-              className="mt-8 border-2 border-[#0b0c10] bg-[#0b0c10] text-[#FAF8F5] hover:bg-transparent hover:text-[#0b0c10] transition-colors duration-300 px-10 py-3.5 text-[11px] font-semibold tracking-[0.25em] uppercase"
+              className="block mx-auto mt-8 border-2 border-[#0b0c10] bg-[#0b0c10] text-[#FAF8F5] hover:bg-transparent hover:text-[#0b0c10] transition-colors duration-300 px-10 py-3.5 text-[11px] font-semibold tracking-[0.25em] uppercase"
             >
               {isError ? "Okay" : "Close"}
             </button>
